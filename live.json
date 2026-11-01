@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "appName": "Mortal Reader",
-  "versionName": "3.6.1",
-  "sitesEnabled": 138,
-  "updatedAt": "2026-11-01T09:19:17Z",
-  "commit": "318672c",
+  "versionName": "3.6",
+  "sitesEnabled": 150,
+  "updatedAt": "2026-11-01T09:29:16Z",
+  "commit": "4eec08a",
   "release": {
     "name": "Actualización ",
     "tag": "Updates",
