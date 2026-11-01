@@ -339,6 +339,10 @@ h2.serif {
   .wordmark { font-size: 5.5rem; }
 }
 
+@media (max-width: 640px) {
+  .status span { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cut, .rise, .dot::after, .phone { animation: none; }
 }

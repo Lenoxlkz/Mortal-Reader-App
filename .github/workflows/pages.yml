@@ -1,16 +1,9 @@
-# Publishes the static site in docs/ to GitHub Pages.
-# Pull requests only upload nothing: the site is deployed on push to main
-# and on manual dispatch. Live numbers do not require a rebuild — the page
-# fetches live-data/live.json at view time.
+# Manual deploy. GitHub rejects creating a Pages site from GITHUB_TOKEN until
+# Pages has been turned on once in the repository settings. The static site in
+# docs/ is also served if Pages is set to branch `main` / folder `/docs`.
 name: Pages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "docs/**"
-      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
