@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Mortal Reader",
+      "hasCanvas": false,
+      "bodyTextLen": 1599,
+      "bodyTextHash": "5eaf2d1a3b6f5d89d6fecf8241b93403d114db38373211ffae195643e64ce1f5",
+      "bodyTextPrefix": "Saltar al contenido MORTAL READER Sincronizando Repositorio PUEN",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Mortal Reader",
+      "hasCanvas": false,
+      "bodyTextLen": 1545,
+      "bodyTextHash": "2f5c7f9a90d398b5de89cddf7e8ed71f74712f1818ced98c2fd2efa37f1fa4da",
+      "bodyTextPrefix": "Saltar al contenido MORTAL READER Repositorio PUENTE LOCAL MORTA",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
