@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Mortal Reader es un puente local para leer y reproducir en sitios de terceros. Sin cuentas. Todo se queda en el dispositivo."
+    />
+    <title>Mortal Reader</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Outfit:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <header class="bar">
+      <div class="bar-inner">
+        <span class="eyebrow">Mortal Reader</span>
+        <div class="bar-end">
+          <span class="status"><i class="dot" aria-hidden="true"></i><span data-status>Sincronizando</span></span>
+          <a class="repo-link" data-repo href="https://github.com/Lenoxlkz/Mortal-Reader-App">Repositorio ↗</a>
+        </div>
+      </div>
+    </header>
+    <main id="contenido">
+      <div class="wrap">
+        <section class="hero">
+          <div>
+            <p class="eyebrow rise">Puente local</p>
+            <h1 class="wordmark rise">
+              Mortal<br />
+              <i>Reader</i>
+            </h1>
+            <span class="cut"></span>
+            <p class="lede">
+              Colecciona sitios para leer y reproducir, en distintos idiomas. La app solo abre el puente.
+              Sin cuenta. Todo se queda en el dispositivo.
+            </p>
+            <div class="actions">
+              <a class="btn solid" data-release-href data-version-btn href="https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/Nuevo/Ahora">Versión 3.5</a>
+              <a class="btn ghost" data-repo href="https://github.com/Lenoxlkz/Mortal-Reader-App">Código</a>
+            </div>
+          </div>
+          <aside class="phone" aria-label="Vista de la app">
+            <div class="screen">
+              <div class="screen-top">
+                <span class="eyebrow">En el teléfono</span>
+                <span class="tick"></span>
+              </div>
+              <ul class="rows">
+                <li><span>Lectura</span><span>ES</span></li>
+                <li class="on"><span>Novela</span><span>EN</span></li>
+                <li><span>Reproducción</span><span>ES</span></li>
+              </ul>
+              <p class="quiet">Nada se envía. Nada sale del aparato.</p>
+            </div>
+          </aside>
+        </section>
+
+        <section class="stats" aria-label="Estado del repositorio">
+          <div class="stat"><span class="eyebrow">Versión</span><strong data-version>3.5</strong></div>
+          <div class="stat"><span class="eyebrow">Sitios en el puente</span><strong data-sites>138</strong></div>
+          <div class="stat"><span class="eyebrow">Publicado</span><strong data-published>31 oct 2026</strong></div>
+        </section>
+        <p class="note" data-note>Mostrando la última copia conocida. Las direcciones no se publican aquí.</p>
+
+        <section class="catalog">
+          <div>
+            <p class="eyebrow">El catálogo</p>
+            <h2 class="serif">Un punto por sitio.</h2>
+            <p class="quiet">El número se actualiza cuando cambia el repositorio. Los enlaces viven solo dentro de la app.</p>
+          </div>
+          <div>
+            <div class="constellation" data-stars aria-hidden="true"></div>
+            <p class="quiet" data-count-line>138 sitios habilitados. Ninguna URL sale del teléfono.</p>
+          </div>
+        </section>
+
+        <section class="principles">
+          <article class="card">
+            <div class="card-top"><span>01</span><span class="idx">Teléfono</span></div>
+            <h3>Sin cuenta</h3>
+            <p>No hay login ni perfil. Lo que usas se queda en ese dispositivo.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span>02</span><span class="idx">Lectura</span></div>
+            <h3>Todo en uno</h3>
+            <p>Lectura y reproducción, en varios idiomas, dentro de una sola herramienta.</p>
+          </article>
+          <article class="card">
+            <div class="card-top"><span>03</span><span class="idx">Puente</span></div>
+            <h3>Solo un puente</h3>
+            <p>La app no aloja el contenido. Abre el sitio. El resto es de quien lo publica.</p>
+          </article>
+        </section>
+
+        <section class="notices">
+          <p class="eyebrow">Aviso</p>
+          <article class="notice"><span class="mark" aria-hidden="true">✦</span>Esta aplicación ha sido concebida exclusivamente como una herramienta «Todo en Uno». Su esencia no trasciende más allá de esta funcionalidad unificada.</article>
+          <article class="notice"><span class="mark" aria-hidden="true">✦</span>Es imperativo aclarar que los anuncios emergentes o las páginas caídas que no respondan son responsabilidad absoluta de los autores de dichas páginas externas. Esta aplicación no guarda relación alguna con dichos contenidos ni su gestión.</article>
+          <article class="notice"><span class="mark" aria-hidden="true">✦</span>No podemos garantizar que el usuario se vea exento de presenciar publicidad en sitios de terceros.</article>
+        </section>
+
+        <section class="release" data-release>
+          <div>
+            <p class="eyebrow">Última actualización</p>
+            <h2 data-release-name>Actualización a v3.5</h2>
+            <p data-release-body>Actualización de versión v3.5
+~ Solo dispositivos arm64-v8a.</p>
+          </div>
+          <a class="btn ghost" data-release-link href="https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/Nuevo/Ahora">Ver release</a>
+        </section>
+
+        <footer class="foot">
+          <p>Mortal Reader. El contenido no es de esta app.</p>
+          <a data-repo href="https://github.com/Lenoxlkz/Mortal-Reader-App">Lenoxlkz / Mortal-Reader-App</a>
+        </footer>
+      </div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
