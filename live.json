@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "appName": "Mortal Reader",
+  "versionName": "3.5",
+  "sitesEnabled": 138,
+  "updatedAt": "2026-11-01T02:59:24Z",
+  "commit": "12535e6",
+  "release": {
+    "name": "Actualización a v3.5",
+    "tag": "Nuevo/Ahora",
+    "body": "Actualización de versión v3.5\r\n~ Solo dispositivos arm64-v8a.",
+    "publishedAt": "2026-10-31T23:40:08Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/Nuevo/Ahora"
+  },
+  "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
+}
