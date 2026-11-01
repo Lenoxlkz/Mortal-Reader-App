@@ -1,5 +1,9 @@
 # Mortal Reader
 
+Sitio: https://lenoxlkz.github.io/Mortal-Reader-App/
+
+Puente local para leer y reproducir en sitios de terceros, en distintos idiomas. Sin cuentas: todo queda en la app del dispositivo. La página muestra la versión y el número de sitios, sincronizados con este repositorio. Las direcciones no salen de la app.
+
 Este es un proyecto de Android Studio que puedes abrir y compilar.
 
 - MainActivity en app/src/main/java abre la página o los archivos locales de esta aplicación en un WebView.
