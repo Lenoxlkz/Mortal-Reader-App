@@ -1,0 +1,40 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Mortal Reader",
+      "hasCanvas": false,
+      "bodyTextLen": 1553,
+      "bodyTextHash": "b9caf742590fee268e67f3c4729fb5cb97972fa0c65c3a51126e1d8ab71f634c",
+      "bodyTextPrefix": "Saltar al contenido MORTAL READER En vivo Repositorio PUENTE LOC",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Mortal Reader",
+      "hasCanvas": false,
+      "bodyTextLen": 1545,
+      "bodyTextHash": "2f5c7f9a90d398b5de89cddf7e8ed71f74712f1818ced98c2fd2efa37f1fa4da",
+      "bodyTextPrefix": "Saltar al contenido MORTAL READER Repositorio PUENTE LOCAL MORTA",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json",
+  "divergesFromBaseline": true,
+  "baselineReasons": [
+    "desktop: body text replaced (similar length, page start changed)"
+  ]
+}
