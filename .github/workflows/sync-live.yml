@@ -1,13 +1,15 @@
-# Regenerates live.json on the orphan branch `live-data`.
-# The GitHub Pages site reads that file through a raw.githubusercontent.com
-# mirror race — unlike api.github.com, the raw host is cache-friendly and is
-# not rate-limited per visitor IP. Names and URLs of third-party sites are
-# intentionally absent: they stay inside the app.
+# Regenerates the public snapshot and writes it in three places that must match:
+# the live-data branch, docs/live.json, and the FALLBACK block in docs/app.js.
+# The page still prefers live-data, then the same mirrors as before. It does not
+# paint those numbers until a source answers. FALLBACK is only shown if every
+# source fails, and the page labels it as backup data.
 name: Sync Live Snapshot
 
 on:
   schedule:
     - cron: "23 */12 * * *"
+  release:
+    types: [published, edited]
   push:
     branches:
       - main
@@ -31,24 +33,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build public snapshot
+      - name: Build public snapshot and refresh fallback copies
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_SHA: ${{ github.sha }}
         run: python3 .github/scripts/sync_live.py
 
-      - name: Publish to live-data branch
+      - name: Commit fallback copies on main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/live.json docs/app.js
+          if git diff --cached --quiet; then
+            echo "fallback copies already current"
+          else
+            git commit -m "chore: sync pages fallback with live snapshot"
+            git push origin HEAD:main
+          fi
+
+      - name: Publish to live-data branch
+        run: |
           git fetch origin live-data:live-data 2>/dev/null \
             && git checkout live-data \
             || { git checkout --orphan live-data && git rm -rf . >/dev/null 2>&1 || true; }
           cp /tmp/live.json live.json
           git add live.json
           if git diff --cached --quiet; then
-            echo "no changes"
+            echo "live-data already current"
             exit 0
           fi
           git commit -m "chore: sync live snapshot"

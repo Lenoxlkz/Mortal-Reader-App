@@ -1,16 +1,17 @@
 {
   "schema": 1,
   "appName": "Mortal Reader",
-  "versionName": "3.5",
-  "sitesEnabled": 138,
-  "updatedAt": "2026-11-01T01:04:29Z",
-  "commit": "0d59d7fc",
+  "versionName": "3.6",
+  "sitesEnabled": 181,
+  "updatedAt": "2026-11-02T04:59:08Z",
+  "commit": "cf31273",
   "release": {
-    "name": "Actualización a v3.5",
-    "tag": "Nuevo/Ahora",
-    "body": "Actualización de versión v3.5\n~ Solo dispositivos arm64-v8a.",
-    "publishedAt": "2026-10-31T23:40:08Z",
-    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/Nuevo/Ahora"
+    "name": "Actualización ",
+    "tag": "v3.6.5",
+    "body": "Se añaden 32 sitios más. \r\nEtiquetas: \r\nEN -> Inglés.\r\nES -> Español.\r\nMulti -> Múltiples idiomas.",
+    "publishedAt": "2026-11-02T02:40:42Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/v3.6.5",
+    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/v3.6.5/Mortal_Reader_v3.6.APK"
   },
   "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
 }

@@ -1,19 +1,22 @@
+// sync:fallback:start
 const FALLBACK = {
-  schema: 1,
-  appName: "Mortal Reader",
-  versionName: "3.5",
-  sitesEnabled: 138,
-  updatedAt: "2026-11-01T01:04:29Z",
-  commit: "0d59d7fc",
-  release: {
-    name: "Actualización a v3.5",
-    tag: "Nuevo/Ahora",
-    body: "Actualización de versión v3.5\n~ Solo dispositivos arm64-v8a.",
-    publishedAt: "2026-10-31T23:40:08Z",
-    url: "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/Nuevo/Ahora",
+  "schema": 1,
+  "appName": "Mortal Reader",
+  "versionName": "3.6",
+  "sitesEnabled": 181,
+  "updatedAt": "2026-11-02T04:59:08Z",
+  "commit": "cf31273",
+  "release": {
+    "name": "Actualización ",
+    "tag": "v3.6.5",
+    "body": "Se añaden 32 sitios más. \r\nEtiquetas: \r\nEN -> Inglés.\r\nES -> Español.\r\nMulti -> Múltiples idiomas.",
+    "publishedAt": "2026-11-02T02:40:42Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/v3.6.5",
+    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/v3.6.5/Mortal_Reader_v3.6.APK"
   },
-  repo: "https://github.com/Lenoxlkz/Mortal-Reader-App",
+  "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
 };
+// sync:fallback:end
 
 const SOURCES = [
   "https://raw.githubusercontent.com/Lenoxlkz/Mortal-Reader-App/live-data/live.json",
@@ -35,6 +38,7 @@ function parseSnap(value) {
           body: typeof release.body === "string" ? release.body : "",
           publishedAt: typeof release.publishedAt === "string" ? release.publishedAt : "",
           url: release.url,
+          downloadUrl: typeof release.downloadUrl === "string" ? release.downloadUrl : "",
         }
       : null;
   return {
@@ -80,14 +84,17 @@ function formatUtc(iso) {
 }
 
 function paint(snap, phase) {
-  const status = phase === "live" ? "En vivo" : "Copia local";
+  const status = phase === "live" ? "En vivo" : "Datos de respaldo";
   document.querySelectorAll("[data-status]").forEach((node) => {
     node.textContent = status;
   });
   const version = document.querySelector("[data-version]");
   if (version) version.textContent = snap.versionName;
   const versionBtn = document.querySelector("[data-version-btn]");
-  if (versionBtn) versionBtn.textContent = `Versión ${snap.versionName}`;
+  if (versionBtn) {
+    versionBtn.textContent = `Descargar versión ${snap.versionName}`;
+    versionBtn.href = (snap.release && snap.release.downloadUrl) || (snap.release && snap.release.url) || snap.repo;
+  }
   const sites = document.querySelector("[data-sites]");
   if (sites) sites.textContent = String(snap.sitesEnabled);
   const when = document.querySelector("[data-published]");
@@ -97,7 +104,7 @@ function paint(snap, phase) {
     note.textContent =
       phase === "live"
         ? `Leído del repositorio${snap.commit ? ` · ${snap.commit}` : ""}.`
-        : "Mostrando la última copia conocida. Las direcciones no se publican aquí.";
+        : "Datos de respaldo. No se pudo consultar el repositorio.";
   }
   const field = document.querySelector("[data-stars]");
   if (field) {
@@ -114,29 +121,36 @@ function paint(snap, phase) {
     countLine.textContent = `${snap.sitesEnabled} sitios habilitados. Ninguna URL sale del teléfono.`;
   }
   const release = document.querySelector("[data-release]");
-  if (release && snap.release) {
-    const title = release.querySelector("[data-release-name]");
-    const body = release.querySelector("[data-release-body]");
-    const link = release.querySelector("[data-release-link]");
-    if (title) title.textContent = snap.release.name;
-    if (body) body.textContent = snap.release.body;
-    if (link) link.href = snap.release.url;
-    const buttons = document.querySelectorAll("[data-release-href]");
-    buttons.forEach((node) => {
-      node.href = snap.release.url;
-    });
+  if (release) {
+    release.hidden = !snap.release;
+    if (snap.release) {
+      const title = release.querySelector("[data-release-name]");
+      const body = release.querySelector("[data-release-body]");
+      const link = release.querySelector("[data-release-link]");
+      if (title) title.textContent = snap.release.name;
+      if (body) body.textContent = snap.release.body;
+      if (link) link.href = snap.release.url;
+    }
   }
   document.querySelectorAll("[data-repo]").forEach((node) => {
     node.href = snap.repo;
   });
 }
 
-paint(FALLBACK, "local");
-document.querySelectorAll("[data-status]").forEach((node) => {
-  node.textContent = "Sincronizando";
-});
+function paintPending() {
+  document.querySelectorAll("[data-status]").forEach((node) => {
+    node.textContent = "Sincronizando";
+  });
+  const note = document.querySelector("[data-note]");
+  if (note) note.textContent = "Consultando el repositorio…";
+  const countLine = document.querySelector("[data-count-line]");
+  if (countLine) countLine.textContent = "Consultando el catálogo…";
+  const release = document.querySelector("[data-release]");
+  if (release) release.hidden = true;
+}
 
+paintPending();
 loadLive().then((snap) => {
   if (snap) paint(snap, "live");
-  else paint(FALLBACK, "local");
+  else paint(FALLBACK, "backup");
 });
