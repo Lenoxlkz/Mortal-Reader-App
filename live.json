@@ -2,15 +2,15 @@
   "schema": 1,
   "appName": "Mortal Reader",
   "versionName": "3.6",
-  "sitesEnabled": 150,
-  "updatedAt": "2026-11-01T17:58:42Z",
-  "commit": "4eec08a",
+  "sitesEnabled": 181,
+  "updatedAt": "2026-11-02T02:49:30Z",
+  "commit": "cf31273",
   "release": {
     "name": "Actualización ",
-    "tag": "V3.6",
-    "body": "Se añadieron 12 sitios más. \r\nSe añadieron etiquetas de idioma en los nombres de sitios.",
-    "publishedAt": "2026-11-01T09:09:47Z",
-    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/V3.6"
+    "tag": "v3.6.5",
+    "body": "Se añaden 32 sitios más. \r\nEtiquetas: \r\nEN -> Inglés.\r\nES -> Español.\r\nMulti -> Múltiples idiomas.",
+    "publishedAt": "2026-11-02T02:40:42Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/v3.6.5"
   },
   "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
 }
