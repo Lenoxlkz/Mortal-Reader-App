@@ -4,15 +4,15 @@ const FALLBACK = {
   "appName": "Mortal Reader",
   "versionName": "3.8",
   "sitesEnabled": 214,
-  "updatedAt": "2026-11-04T18:04:23Z",
-  "commit": "4533ce6",
+  "updatedAt": "2026-11-04T18:07:43Z",
+  "commit": "7ccfc8a",
   "release": {
-    "name": "Actualización ",
-    "tag": "v3.8.1",
-    "body": "Se añadieron algunas utilidades:\r\n- Cambio inteligente entre modo oscuro y modo claro. \r\n- Guardador rápido para intercambiar entre sitios. \r\n- Anti-adblocker para sitios que bloquean los DNS. \r\n- Se añadió 1 sitio más.",
-    "publishedAt": "2026-11-03T11:50:59Z",
-    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/v3.8.1",
-    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/v3.8.1/Mortal_Reader_v3.8.APK"
+    "name": "V3.8.4",
+    "tag": "V3.8.4",
+    "body": "Se añadieron más sitios en inglés. \r\nSe mejoró el anti-adblocker.",
+    "publishedAt": "2026-11-04T18:07:01Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/V3.8.4",
+    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/V3.8.4/Mortal_Reader_v3.8.APK"
   },
   "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
 };
