@@ -3,9 +3,9 @@ const FALLBACK = {
   "schema": 1,
   "appName": "Mortal Reader",
   "versionName": "3.8",
-  "sitesEnabled": 182,
-  "updatedAt": "2026-11-03T13:04:46Z",
-  "commit": "4d1a74e",
+  "sitesEnabled": 214,
+  "updatedAt": "2026-11-04T18:04:23Z",
+  "commit": "4533ce6",
   "release": {
     "name": "Actualización ",
     "tag": "v3.8.1",
