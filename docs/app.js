@@ -81,7 +81,7 @@ const COPY = {
     statusLive: "En vivo",
     statusBackup: "Datos de respaldo",
     kicker: "Puente local",
-    lede: "Colecciona sitios para leer Mangas, Manhwas, Novelas y reproducir Anime, en distintos idiomas. La app solo abre el puente. Sin cuentas o registro. Todo se queda en el dispositivo. Administra sitios y cuentas desde una app.",
+    lede: "Una aplicación Android independiente. Diferentes sitios. Una experiencia unificada. Lee, explora y reproduce. Manga, Manhwa, Novelas ligeras y Anime. Diferentes sitios web desde un solo lugar. GeckoView como motor de navegación. Sin cuentas propias de Mortal Reader. Todo se queda en el dispositivo. Administra sitios y cuentas desde una app.",
     download: "Descargar versión",
     repo: "Ver repositorio",
     phoneLabel: "En el teléfono",
@@ -90,7 +90,7 @@ const COPY = {
     novel: "Novela",
     play: "Reproducción",
     phoneNote:
-      "Navegación más segura que la habitual: el DNS de AdGuard va integrado para reforzar la privacidad. Eso no asegura que todo sea confiable.",
+      "El contenido permanece alojado en sus respectivos sitios web externos. Navegación más segura que la habitual: el DNS de AdGuard va integrado para reforzar la privacidad. Pero no asegura que todo sea confiable.",
     statsAria: "Estado del repositorio",
     statVersion: "Versión",
     statSites: "Sitios en el puente",
@@ -102,8 +102,8 @@ const COPY = {
     catalogBody: "El número se actualiza cuando cambia el repositorio. Los enlaces viven solo dentro de la app.",
     countBoot: "Consultando el catálogo…",
     p1k: "Teléfono",
-    p1t: "Sin cuenta",
-    p1b: "No hay registro en esta app. Los sitios y las cuentas se administran en el dispositivo.",
+    p1t: "Sin cuenta propia",
+    p1b: "Mortal Reader no requiere cuentas propias ni utiliza un servidor central para alojar el contenido. La navegación y las interacciones se realizan directamente con los sitios externos, que mantienen sus propias políticas de privacidad y seguimiento.",
     p2k: "Lectura",
     p2t: "Todo en uno",
     p2b: "Manga, manhwa, novela y anime, en español, inglés o varios idiomas, dentro de una sola herramienta.",
@@ -116,8 +116,8 @@ const COPY = {
     n3: "No podemos garantizar que el usuario se vea exento de presenciar publicidad en sitios de terceros.",
     releaseKicker: "Última actualización",
     releaseLink: "Ver release",
-    foot: "Mortal Reader. El contenido no es de esta app.",
-    meta: "Mortal Reader reúne manga, manhwa, novela y anime en un puente local, en español, inglés o varios idiomas.",
+    foot: "Mortal Reader ~ El contenido no es de esta app.",
+    meta: "Aplicación Android independiente para leer manga, manhwa y novelas ligeras, y reproducir anime, desde un solo lugar.",
   },
   en: {
     skip: "Skip to content",
@@ -127,7 +127,7 @@ const COPY = {
     statusLive: "Live",
     statusBackup: "Backup data",
     kicker: "Local bridge",
-    lede: "Collect sites to read manga, manhwa and novels, and to watch anime, in more than one language. The app only opens the bridge. No accounts or sign-up. Everything stays on the device. Manage sites and accounts from one app.",
+    lede: "A standalone Android app. Different sites. One unified experience. Read, explore and play. Manga, manhwa, light novels and anime. Different websites from one place. GeckoView as the browsing engine. No Mortal Reader accounts of its own. Everything stays on the device. Manage sites and accounts from the app.",
     download: "Download version",
     repo: "View repository",
     phoneLabel: "On the phone",
@@ -136,7 +136,7 @@ const COPY = {
     novel: "Novel",
     play: "Playback",
     phoneNote:
-      "Safer than ordinary browsing: AdGuard DNS is built in to strengthen privacy. That does not mean every site can be trusted.",
+      "The content stays hosted on its own external websites. Safer browsing than usual: AdGuard DNS is built in to strengthen privacy. That does not mean everything can be trusted.",
     statsAria: "Repository status",
     statVersion: "Version",
     statSites: "Sites on the bridge",
@@ -148,8 +148,8 @@ const COPY = {
     catalogBody: "The count updates when the repository changes. Links stay inside the app.",
     countBoot: "Checking the catalog…",
     p1k: "Phone",
-    p1t: "No account",
-    p1b: "There is no sign-up in this app. Sites and accounts are managed on the device.",
+    p1t: "No app account",
+    p1b: "Mortal Reader does not require accounts of its own and does not use a central server to host the content. Browsing and interactions happen directly with the external sites, which keep their own privacy and tracking policies.",
     p2k: "Reading",
     p2t: "All in one",
     p2b: "Manga, manhwa, novels and anime, in Spanish, English or multiple languages, in a single tool.",
@@ -162,8 +162,8 @@ const COPY = {
     n3: "We cannot guarantee that you will not see advertising on third-party sites.",
     releaseKicker: "Latest update",
     releaseLink: "View release",
-    foot: "Mortal Reader. The content is not from this app.",
-    meta: "Mortal Reader gathers manga, manhwa, novels and anime in a local bridge, in Spanish, English or multiple languages.",
+    foot: "Mortal Reader ~ The content is not from this app.",
+    meta: "A standalone Android app to read manga, manhwa and light novels, and to watch anime, from one place.",
   },
 };
 
@@ -290,6 +290,12 @@ function setLang(lang) {
     /* ignore */
   }
   applyI18n();
+  document.querySelectorAll(".sticker.cream, .sticker.red").forEach((el, index) => {
+    const labels = currentLang() === "en"
+      ? ["MANGA", "MANHWA", "NOVEL", "ANIME", "ES", "EN", "MULTI", "GECKO"]
+      : ["MANGA", "MANHWA", "NOVELA", "ANIME", "ES", "EN", "MULTI", "GECKO"];
+    el.textContent = labels[index % labels.length];
+  });
   if (view.phase === "boot") paintPending();
   else paint(view.snap || FALLBACK, view.phase === "live" ? "live" : "backup");
 }
@@ -311,3 +317,41 @@ loadLive().then((snap) => {
   if (snap) paint(snap, "live");
   else paint(FALLBACK, "backup");
 });
+
+function mountPoster() {
+  const root = document.querySelector("[data-poster]");
+  if (!root) return;
+  const glyphs = ["📚", "📖", "📕", "🎬", "🐉", "🦊", "⭐", "🌙", "🛡️", "🎧", "✨", "🔖", "🎌", "💬", "📜", "🔥"];
+  const labels = currentLang() === "en"
+    ? ["MANGA", "MANHWA", "NOVEL", "ANIME", "ES", "EN", "MULTI", "GECKO"]
+    : ["MANGA", "MANHWA", "NOVELA", "ANIME", "ES", "EN", "MULTI", "GECKO"];
+  for (let i = 0; i < 70; i += 1) {
+    const el = document.createElement("span");
+    const label = i % 4 === 0;
+    el.className = label ? (i % 8 === 0 ? "sticker red" : "sticker cream") : "sticker";
+    el.textContent = label ? labels[Math.floor(i / 4) % labels.length] : glyphs[i % glyphs.length];
+    const col = i % 5;
+    const row = Math.floor(i / 5);
+    const jitter = (i * 17) % 18 - 8;
+    el.style.left = `calc(${col * 19 + 1}% + ${jitter}px)`;
+    el.style.top = `${row * 7.6 + (i % 3) * 1.3}%`;
+    el.style.setProperty("--r", `${(i * 29) % 28 - 14}deg`);
+    el.style.setProperty("--s", `${2.5 + (i % 3) * 0.65}rem`);
+    root.append(el);
+  }
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let frame = 0;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        root.style.transform = `translate3d(0, ${-window.scrollY * 0.42}px, 0)`;
+        frame = 0;
+      });
+    },
+    { passive: true },
+  );
+}
+
+mountPoster();

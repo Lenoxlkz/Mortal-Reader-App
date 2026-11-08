@@ -6,13 +6,15 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Mortal Reader reúne manga, manhwa, novela y anime en un puente local, en español, inglés o varios idiomas."
+      content="Aplicación Android independiente para leer manga, manhwa y novelas ligeras, y reproducir anime, desde un solo lugar."
     />
     <title>Mortal Reader</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="poster" data-poster aria-hidden="true"></div>
+    <div class="poster-veil" aria-hidden="true"></div>
     <a class="skip" href="#contenido" data-i18n="skip">Saltar al contenido</a>
     <header class="bar">
       <div class="bar-inner">
@@ -116,8 +118,7 @@
               </span>
               <span>01</span>
             </div>
-            <h3 data-i18n="p1t">Sin cuenta</h3>
-            <p data-i18n="p1b">No hay registro en esta app. Los sitios y las cuentas se administran en el dispositivo.</p>
+            <p class="card-lead" data-i18n="p1b">Mortal Reader no requiere cuentas propias ni utiliza un servidor central para alojar el contenido. La navegación y las interacciones se realizan directamente con los sitios externos, que mantienen sus propias políticas de privacidad y seguimiento.</p>
           </article>
           <article class="card">
             <div class="card-top">

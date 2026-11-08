@@ -181,6 +181,7 @@ a { color: inherit; }
   margin-top: 1.5rem;
   font-size: 1.125rem;
   line-height: 1.6;
+  text-shadow: 0 2px 16px #000;
 }
 
 .actions {
@@ -350,6 +351,12 @@ h2.serif {
 
 .card h3 { margin: 2rem 0 0; font-size: 1.25rem; font-weight: 500; }
 .card p, .notice p, .release p { color: var(--muted); line-height: 1.6; }
+.card-lead {
+  margin: 1.15rem 0 0;
+  color: var(--fg);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
 
 .notices { margin-top: 4rem; border-top: 1px solid var(--line); padding-top: 2.5rem; }
 .notice {
@@ -424,4 +431,71 @@ h2.serif {
 
 @media (prefers-reduced-motion: reduce) {
   .cut, .rise, .dot::after, .phone, .rows li, .btn .icon { animation: none; transition: none; }
+}
+
+.bar, #contenido { position: relative; z-index: 1; }
+
+.poster {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 280vh;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.poster-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 18%, rgb(0 0 0 / 0.62), transparent 58%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.28), rgb(0 0 0 / 0.08) 40%, rgb(0 0 0 / 0.4));
+}
+
+.sticker {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: var(--s, 3rem);
+  height: var(--s, 3rem);
+  border: 1px solid #2c2c2c;
+  border-radius: 0.9rem;
+  background: #141414;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 0.45);
+  transform: rotate(var(--r, -8deg));
+  font-size: calc(var(--s, 3rem) * 0.46);
+  line-height: 1;
+  user-select: none;
+}
+
+.sticker.cream {
+  background: #f3efe6;
+  color: #111;
+  border-color: #f3efe6;
+  width: auto;
+  height: auto;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.sticker.red {
+  background: #e10600;
+  color: #fff;
+  border-color: #e10600;
+  width: auto;
+  height: auto;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+@media (max-width: 640px) {
+  .sticker:nth-child(4n) { opacity: 0.35; }
 }
