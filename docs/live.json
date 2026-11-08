@@ -3,15 +3,15 @@
   "appName": "Mortal Reader",
   "versionName": "3.8",
   "sitesEnabled": 214,
-  "updatedAt": "2026-11-05T07:00:09Z",
-  "commit": "30984ed",
+  "updatedAt": "2026-11-08T03:33:57Z",
+  "commit": "356f597",
   "release": {
-    "name": "V3.8.4",
-    "tag": "V3.8.4",
-    "body": "En español: Se añadieron más sitios en inglés. Se mejoró el anti-adblocker. \r\nIn English: More English-language sites have been added.\r\nThe anti-adblocker has been improved.",
-    "publishedAt": "2026-11-04T18:07:01Z",
-    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/V3.8.4",
-    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/V3.8.4/Mortal_Reader_v3.8.APK"
+    "name": "3.8.7",
+    "tag": "3.8.7",
+    "body": "English: The collection has been expanded, a new auto-scroll function has been added for reading, and a new cache and cookie cleaning function has been added. \r\nEspañol: Se ha ampliado la colección, se ha añadido una nueva función de desplazamiento automático para la lectura y se ha incorporado una nueva función de limpieza de caché y cookies.",
+    "publishedAt": "2026-11-08T03:33:51Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/3.8.7",
+    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/3.8.7/Mortal_Reader_v3.8.APK"
   },
   "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
 }
