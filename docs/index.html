@@ -8,9 +8,12 @@
       name="description"
       content="Aplicación Android independiente para leer manga, manhwa y novelas ligeras, y reproducir anime, desde un solo lugar."
     />
+    <meta property="og:title" content="Mortal Reader" />
+    <meta property="og:image" content="https://lenoxlkz.github.io/Mortal-Reader-App/img/logo.jpg" />
     <title>Mortal Reader</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="theme.css" />
   </head>
   <body>
     <div class="poster" data-poster aria-hidden="true"></div>
@@ -18,13 +21,19 @@
     <a class="skip" href="#contenido" data-i18n="skip">Saltar al contenido</a>
     <header class="bar">
       <div class="bar-inner">
-        <span class="eyebrow">Mortal Reader</span>
+        <a class="brand" href="#contenido">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-1.5V18c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V4.5C17 4 14 4.5 12 6zM12 6v13.5" /></svg>
+          <span>Mortal Reader</span>
+        </a>
         <div class="bar-end">
           <span class="status"><i class="dot" aria-hidden="true"></i><span data-status>Sincronizando</span></span>
           <div class="lang" role="group" data-i18n-aria="langLabel" aria-label="Idioma">
             <button type="button" data-lang="es" aria-pressed="true">ES</button>
             <button type="button" data-lang="en" aria-pressed="false">EN</button>
           </div>
+          <a class="chip-btn" href="https://whatsapp.com/channel/0029Vb90L58F1YlaitN2hx3R" aria-label="WhatsApp" target="_blank" rel="noopener">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z" /></svg>
+          </a>
           <a class="profile-link" data-profile href="https://github.com/Lenoxlkz"><span data-i18n="profile">Perfil</span> <span aria-hidden="true">↗</span></a>
         </div>
       </div>
@@ -32,6 +41,7 @@
     <main id="contenido">
       <div class="wrap">
         <section class="hero">
+          <div class="mark-bg" aria-hidden="true">MORTAL</div>
           <div>
             <p class="eyebrow rise" data-i18n="kicker">Puente local</p>
             <h1 class="wordmark rise">
@@ -46,6 +56,10 @@
               <a class="btn solid" data-version-btn href="https://github.com/Lenoxlkz/Mortal-Reader-App/releases/latest">
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 20h14" /></svg>
                 <span data-download>Descargar versión</span>
+              </a>
+              <a class="btn wa" href="https://whatsapp.com/channel/0029Vb90L58F1YlaitN2hx3R" target="_blank" rel="noopener">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z" /></svg>
+                <span data-x="wa">WhatsApp</span>
               </a>
               <a class="btn ghost" data-repo href="https://github.com/Lenoxlkz/Mortal-Reader-App">
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
@@ -90,14 +104,20 @@
           </aside>
         </section>
 
-        <section class="stats" data-i18n-aria="statsAria" aria-label="Estado del repositorio">
+        <section class="shots reveal" data-shots hidden>
+          <p class="eyebrow" data-x="shotsK">Así se ve</p>
+          <h2 class="serif" data-x="shotsT">La app, por dentro.</h2>
+          <div class="shot-row" data-row></div>
+        </section>
+
+        <section class="stats reveal" data-i18n-aria="statsAria" aria-label="Estado del repositorio">
           <div class="stat"><span class="eyebrow" data-i18n="statVersion">Versión</span><strong data-version>—</strong></div>
           <div class="stat"><span class="eyebrow" data-i18n="statSites">Sitios en el puente</span><strong data-sites>—</strong></div>
           <div class="stat"><span class="eyebrow" data-i18n="statPublished">Publicado</span><strong data-published>—</strong></div>
         </section>
         <p class="note" data-note>Consultando el repositorio…</p>
 
-        <section class="catalog">
+        <section class="catalog reveal">
           <div>
             <p class="eyebrow" data-i18n="catalogKicker">El catálogo</p>
             <h2 class="serif" data-i18n="catalogTitle">Un punto por sitio.</h2>
@@ -109,7 +129,7 @@
           </div>
         </section>
 
-        <section class="principles">
+        <section class="principles reveal">
           <article class="card">
             <div class="card-top">
               <span class="row-name">
@@ -144,20 +164,32 @@
           </article>
         </section>
 
-        <section class="notices">
-          <p class="eyebrow" data-i18n="noticeKicker">Aviso</p>
+        <details class="notices reveal">
+          <summary class="eyebrow" data-i18n="noticeKicker">Aviso</summary>
           <article class="notice"><span class="mark" aria-hidden="true">✦</span><span data-i18n="n1">Esta aplicación ha sido concebida exclusivamente como una herramienta «Todo en Uno». Su esencia no trasciende más allá de esta funcionalidad unificada.</span></article>
           <article class="notice"><span class="mark" aria-hidden="true">✦</span><span data-i18n="n2">Es imperativo aclarar que los anuncios emergentes o las páginas caídas que no respondan son responsabilidad absoluta de los autores de dichas páginas externas. Esta aplicación no guarda relación alguna con dichos contenidos ni su gestión.</span></article>
           <article class="notice"><span class="mark" aria-hidden="true">✦</span><span data-i18n="n3">No podemos garantizar que el usuario se vea exento de presenciar publicidad en sitios de terceros.</span></article>
-        </section>
+        </details>
 
-        <section class="release" data-release hidden>
+        <section class="release reveal" data-release hidden>
           <div>
             <p class="eyebrow" data-i18n="releaseKicker">Última actualización</p>
             <h2 data-release-name></h2>
             <p data-release-body></p>
           </div>
           <a class="btn ghost" data-release-link href="https://github.com/Lenoxlkz/Mortal-Reader-App/releases"><span data-i18n="releaseLink">Ver release</span></a>
+        </section>
+
+        <section class="channel reveal">
+          <div>
+            <p class="eyebrow" data-x="waK">Comunidad</p>
+            <h2 data-x="waT">Canal de WhatsApp</h2>
+            <p class="quiet" data-x="waB">Novedades, versiones y avisos de Mortal Reader, directo en tu teléfono.</p>
+          </div>
+          <a class="btn wa" href="https://whatsapp.com/channel/0029Vb90L58F1YlaitN2hx3R" target="_blank" rel="noopener">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z" /></svg>
+            <span data-x="waBtn">Unirme al canal</span>
+          </a>
         </section>
 
         <footer class="foot">
@@ -167,5 +199,6 @@
       </div>
     </main>
     <script src="app.js"></script>
+    <script src="extras.js" defer></script>
   </body>
 </html>
