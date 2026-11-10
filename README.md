@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/img/logo.jpg" alt="Mortal Reader" width="300" />
+  <img src="docs/img/logo/logo.jpg" alt="Mortal Reader" width="300" />
 </p>
 
 <h3 align="center">An app, an experiment. Curious? Read on.</h3>
