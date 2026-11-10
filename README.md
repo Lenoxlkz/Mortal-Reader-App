@@ -24,6 +24,8 @@ Reading and playback from one place, in Spanish, English or multiple languages. 
 
 The app opens the site. Browsing happens directly with that external page, which keeps its own ads, privacy policy and tracking. The content is not Mortal Reader's: if a site shows advertising or fails to load, that belongs to whoever publishes it. AdGuard strengthens privacy, but it does not guarantee that every site can be trusted.
 
+### 4. ⓘ It is not intended to be a platform for hosting content, but rather a tool that makes it easier to access and organize different websites from a single location ⓘ
+
 > If you want to feed your curiosity, give the apple a taste…
 
 **[Download app →](https://github.com/Lenoxlkz/Mortal-Reader-App/releases/latest)**
@@ -48,6 +50,8 @@ Lectura y reproducción desde un solo lugar, en español, inglés o varios idiom
 #### 3. ¿CÓMO FUNCIONA?
 
 La app abre el sitio. La navegación ocurre directamente con esa página externa, que mantiene sus propios anuncios, política de privacidad y seguimiento. El contenido no es de Mortal Reader: si un sitio muestra publicidad o no carga, eso es responsabilidad de quien lo publica. AdGuard refuerza la privacidad, pero no garantiza que todos los sitios sean confiables.
+
+#### 4. ⓘ No pretende ser una plataforma que aloje contenido, sino una herramienta que facilita el acceso y la organización de diferentes sitios desde un mismo lugar ⓘ
 
 > Si quieres alimentar tu curiosidad, dale una probada a la manzana…
 
