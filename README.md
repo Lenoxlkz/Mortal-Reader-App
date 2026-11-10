@@ -49,7 +49,7 @@ Lectura y reproducción desde un solo lugar, en español, inglés o varios idiom
 
 La app abre el sitio. La navegación ocurre directamente con esa página externa, que mantiene sus propios anuncios, política de privacidad y seguimiento. El contenido no es de Mortal Reader: si un sitio muestra publicidad o no carga, eso es responsabilidad de quien lo publica. AdGuard refuerza la privacidad, pero no garantiza que todos los sitios sean confiables.
 
-> Si quieres alimentar tu curiosidad, dale un probada a la manzana…
+> Si quieres alimentar tu curiosidad, dale una probada a la manzana…
 
 **[Descargar app →](https://github.com/Lenoxlkz/Mortal-Reader-App/releases/latest)**
 
