@@ -57,16 +57,6 @@ La app abre el sitio. La navegación ocurre directamente con esa página externa
 
 ---
 
-### For developers
+### For Remember
 
 The website lives in `docs/` and is published with GitHub Pages. The version and the number of sites are read live from the `live-data` branch. That file is regenerated automatically whenever `app/src/main/assets/app_config.json` changes. It publishes no names or addresses.
-
-This is an Android Studio project you can open and build:
-
-- `MainActivity` in `app/src/main/java` opens the page or the local files of this app in a WebView.
-- `app/src/main/AndroidManifest.xml` holds the package name, permissions and icon.
-- `app/src/main/assets/app_config.json` is the runtime configuration that WebToApp bundles in the APK. An encrypted build stores it as ciphertext; this copy is plain text.
-- `app/src/main/res/xml/network_security_config.xml` and `res/raw/` hold the network trust settings.
-- `app/src/main/assets/www/` and `assets/files/` hold local HTML, frontend, gallery, splash and audio. `node_modules` and `.git` are left out.
-
-Open the folder in Android Studio to sync and build. It does not include the signing keystore or the full WebToApp shell runtime. It may include activation secrets and proxy credentials.
