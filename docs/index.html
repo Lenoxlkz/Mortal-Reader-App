@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Standalone Android app for reading manga, manhwa and light novels, and playing anime, all from one place."
+      content="Aplicación Android independiente para leer manga, manhwa y novelas ligeras, y reproducir anime, desde un solo lugar."
     />
     <meta property="og:title" content="Mortal Reader" />
     <meta property="og:image" content="https://lenoxlkz.github.io/Mortal-Reader-App/img/logo.jpg" />
@@ -14,6 +14,7 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="logo.css" />
   </head>
   <body>
     <div class="poster" data-poster aria-hidden="true"></div>
@@ -44,10 +45,13 @@
           <div class="mark-bg" aria-hidden="true">MORTAL</div>
           <div>
             <p class="eyebrow rise" data-i18n="kicker">Puente local</p>
-            <h1 class="wordmark rise">
-              Mortal<br />
-              <i>Reader</i>
-            </h1>
+            <div class="title-row">
+              <span class="hero-logo rise" aria-hidden="true"><img src="img/logo.jpg" alt="" decoding="async" /></span>
+              <h1 class="wordmark rise">
+                Mortal<br />
+                <i>Reader</i>
+              </h1>
+            </div>
             <span class="cut"></span>
             <p class="lede" data-i18n="lede">
               Una aplicación Android independiente. Diferentes sitios. Una experiencia unificada. Lee, explora y reproduce. Manga, Manhwa, Novelas ligeras y Anime. Diferentes sitios web desde un solo lugar. GeckoView como motor de navegación. Sin cuentas propias de Mortal Reader. Todo se queda en el dispositivo. Administra sitios y cuentas desde una app.
