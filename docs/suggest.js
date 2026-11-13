@@ -1,8 +1,8 @@
 (() => {
   const REPO = "Lenoxlkz/Mortal-Reader-App";
-  // A token in this file is public. Leave it empty unless it is a fine-grained
-  // PAT whose only permission is Issues on this one repository.
-  const TOKEN = (window.MORTAL_SUGGEST_TOKEN || "").trim();
+  // URL del Worker de Cloudflare que crea el issue (ver worker/README.md).
+  // Si está vacía, o si el Worker falla, se abre GitHub con el issue ya escrito.
+  const ENDPOINT = "";
   const COPY = {
     es: {
       button: "Enviar sugerencia para añadir sitios web",
@@ -19,6 +19,7 @@
       short: "Cuéntalo con un poco más de detalle.",
       opened: "Dejé la sugerencia escrita. En GitHub solo hay que confirmar el envío.",
       sent: "Listo. La sugerencia ya quedó publicada.",
+      rate: "Enviaste varias sugerencias seguidas. Inténtalo de nuevo más tarde.",
       fail: "No se pudo enviar. Inténtalo de nuevo en un momento.",
       wait: "Enviando…",
     },
@@ -37,6 +38,7 @@
       short: "Add a little more detail.",
       opened: "The suggestion is already written. On GitHub you only need to confirm it.",
       sent: "Done. The suggestion is published.",
+      rate: "You sent several suggestions in a row. Try again later.",
       fail: "It could not be sent. Try again in a moment.",
       wait: "Sending…",
     },
@@ -119,7 +121,7 @@
     }
     const title = titleFrom(text);
     const body = bodyFrom(text, url, siteLang);
-    if (!TOKEN) {
+    if (!ENDPOINT) {
       openGithub(title, body);
       say(t("opened"), "ok");
       return;
@@ -128,21 +130,23 @@
     if (send) send.disabled = true;
     say(t("wait"));
     try {
-      const response = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
+      const response = await fetch(ENDPOINT, {
         method: "POST",
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-        body: JSON.stringify({ title, body, labels: ["sugerencia"] }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, url, siteLang, lang: lang(), company: "" }),
       });
+      if (response.status === 429) {
+        say(t("rate"), "bad");
+        return;
+      }
       if (!response.ok) throw new Error(String(response.status));
+      const data = await response.json();
       form.reset();
-      say(t("sent"), "ok");
+      say(data.number ? `${t("sent")} #${data.number}` : t("sent"), "ok");
+      setTimeout(() => modal.open && modal.close(), 2600);
     } catch {
-      say(t("fail"), "bad");
+      openGithub(title, body); // plan B: GitHub con el issue ya escrito
+      say(t("opened"), "ok");
     } finally {
       if (send) send.disabled = false;
     }
