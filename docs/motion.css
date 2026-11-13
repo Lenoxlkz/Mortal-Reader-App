@@ -1,0 +1,29 @@
+:root{--e:cubic-bezier(.2,.7,.2,1)}
+html{scroll-behavior:smooth}
+@keyframes mIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes float{50%{transform:translateY(-10px)}}
+@keyframes sweep{0%,60%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+@keyframes swap{from{opacity:.2;filter:blur(4px)}to{opacity:1;filter:none}}
+@keyframes tw{50%{opacity:.45}}
+.js .hero [data-m]{opacity:0;animation:mIn .85s var(--e) forwards;animation-delay:calc(var(--i)*90ms + 450ms)}
+.js .hero .phone[data-m]{animation:mIn .85s var(--e) both,float 7s ease-in-out infinite;animation-delay:calc(var(--i)*90ms + 450ms),2.2s}
+.mark-bg{transform:translate(-50%,calc(var(--sy,0)*.14px))}
+.bar{transition:background .3s,box-shadow .3s}
+.bar.scrolled{background:rgb(10 10 10/.82);box-shadow:0 10px 30px rgb(0 0 0/.45)}
+.bar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;transform-origin:0 50%;transform:scaleX(var(--p,0));background:linear-gradient(90deg,var(--accent),#ff6a5c)}
+.btn.solid{position:relative;overflow:hidden}
+.btn.solid::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgb(255 255 255/.5) 50%,transparent 65%);transform:translateX(-130%);animation:sweep 5s ease-in-out 2s infinite}
+.js .reveal{transform:none;transition:opacity .9s}
+.js .reveal.in:not(.focus){opacity:.62}
+.js .reveal [data-s]{opacity:0;transform:translateY(26px) scale(.97);transition:opacity .8s var(--e),transform .8s var(--e);transition-delay:calc(var(--i)*110ms)}
+.js .reveal.in [data-s]{opacity:1;transform:none}
+.card,.channel{position:relative}
+.card::before,.channel::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(16rem circle at var(--mx,50%) var(--my,0),rgb(225 6 0/.18),transparent 65%)}
+.channel::before{background:radial-gradient(16rem circle at var(--mx,50%) var(--my,0),rgb(37 211 102/.2),transparent 65%)}
+.card:hover::before,.channel:hover::before{opacity:1}
+.card>*,.channel>*{position:relative}
+#contenido.swap{animation:swap .5s var(--e)}
+[data-stars]>*{animation:tw 3.4s ease-in-out infinite}
+[data-stars]>:nth-child(3n){animation-delay:-1.1s}
+[data-stars]>:nth-child(4n+1){animation-delay:-2.3s;animation-duration:4.4s}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.js .hero [data-m],.js .reveal [data-s]{opacity:1;transform:none}.js .reveal.in:not(.focus){opacity:1}}
