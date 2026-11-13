@@ -1,0 +1,37 @@
+# Cuando hay más de 10 ejecuciones, conserva las 6 más recientes de cualquier
+# workflow y, además, las 2 Sync Live Snapshot más nuevas. Así el historial
+# de Pages no se queda con todo el cupo y borra las sincronizaciones.
+name: Cleanup Workflow Runs
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/cleanup-runs.yml"
+      - ".github/scripts/cleanup_runs.py"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: cleanup-runs
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Delete old workflow runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: python3 .github/scripts/cleanup_runs.py
