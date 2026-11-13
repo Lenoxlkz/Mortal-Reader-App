@@ -1,0 +1,125 @@
+.suggest-modal {
+  width: min(36rem, calc(100% - 1.5rem));
+  max-height: calc(100dvh - 1.5rem);
+  padding: 0;
+  border: 1px solid var(--edge, #2a2a2a);
+  border-radius: 1.5rem;
+  background: #0c0c0c;
+  color: var(--fg, #f3efe6);
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.65);
+}
+
+.suggest-modal::backdrop {
+  background: rgb(0 0 0 / 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.suggest-card {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 1.25rem;
+  overflow: auto;
+  max-height: calc(100dvh - 1.5rem);
+}
+
+.suggest-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.suggest-top h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.suggest-x {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--edge, #2a2a2a);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.suggest-field {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--muted, #9a958c);
+}
+
+.suggest-field textarea,
+.suggest-field input {
+  width: 100%;
+  border: 1px solid var(--edge, #2a2a2a);
+  border-radius: 1rem;
+  background: #000;
+  color: var(--fg, #f3efe6);
+  font: inherit;
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.suggest-field textarea {
+  min-height: 8.5rem;
+  resize: vertical;
+}
+
+.suggest-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.suggest-langs legend {
+  width: 100%;
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+  color: var(--muted, #9a958c);
+}
+
+.suggest-langs label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.75rem;
+}
+
+.suggest-note {
+  min-height: 1.2rem;
+  margin: 0;
+  color: var(--muted, #9a958c);
+  font-size: 0.85rem;
+}
+
+.suggest-note[data-kind="bad"] { color: #ff8d86; }
+.suggest-note[data-kind="ok"] { color: #7dffae; }
+
+.suggest-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.suggest-trap {
+  position: absolute;
+  left: -999px;
+  height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .suggest-actions .btn { flex: 1 1 100%; }
+}

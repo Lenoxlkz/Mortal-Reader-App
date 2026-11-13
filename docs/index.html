@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="logo.css" />
     <link rel="stylesheet" href="ui.css" />
     <link rel="stylesheet" href="refine.css" />
+    <link rel="stylesheet" href="suggest.css" />
   </head>
   <body>
     <div class="poster" data-poster aria-hidden="true"></div>
@@ -75,6 +76,10 @@
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
                 <span data-i18n="repo">Ver repositorio</span>
               </a>
+              <button type="button" class="btn ghost" data-suggest>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z" /></svg>
+                <span data-suggest-i18n="button">Enviar sugerencia para añadir sitios web</span>
+              </button>
             </div>
           </div>
         </section>
@@ -212,8 +217,42 @@
         </footer>
       </div>
     </main>
+    <dialog class="suggest-modal" data-suggest-modal>
+      <form class="suggest-card" data-suggest-form>
+        <div class="suggest-top">
+          <h2 data-suggest-i18n="title">Sugerir un sitio web</h2>
+          <button type="button" class="suggest-x" data-suggest-close aria-label="Cerrar">×</button>
+        </div>
+        <p class="quiet" data-suggest-i18n="help">Escríbelo como se lo contarías a alguien. Qué sitio es, para leer o ver, y en qué idioma.</p>
+        <label class="suggest-field">
+          <span data-suggest-i18n="textLabel">Tu sugerencia</span>
+          <textarea name="text" data-suggest-text required minlength="12" maxlength="2000" placeholder="Por ejemplo: un sitio de novelas en inglés. Se llama … y el enlace es …"></textarea>
+        </label>
+        <label class="suggest-field">
+          <span data-suggest-i18n="urlLabel">Enlace del sitio, si lo tienes</span>
+          <input name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://" />
+        </label>
+        <fieldset class="suggest-langs">
+          <legend data-suggest-i18n="langLabel">Idioma del sitio</legend>
+          <label><input type="radio" name="siteLang" value="ES" /> ES</label>
+          <label><input type="radio" name="siteLang" value="EN" /> EN</label>
+          <label><input type="radio" name="siteLang" value="Multi" /> Multi</label>
+          <label><input type="radio" name="siteLang" value="" checked /> <span data-suggest-i18n="langAny">No lo sé</span></label>
+        </fieldset>
+        <label class="suggest-trap" aria-hidden="true">
+          <span>Company</span>
+          <input name="company" tabindex="-1" autocomplete="off" />
+        </label>
+        <p class="suggest-note" data-suggest-note></p>
+        <div class="suggest-actions">
+          <button type="submit" class="btn solid" data-suggest-send>Enviar sugerencia</button>
+          <button type="button" class="btn ghost" data-suggest-close data-suggest-i18n="cancel">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
     <script src="app.js"></script>
     <script src="extras.js" defer></script>
     <script src="ui.js" defer></script>
+    <script src="suggest.js" defer></script>
   </body>
 </html>
