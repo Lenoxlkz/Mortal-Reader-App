@@ -46,33 +46,34 @@
   );
   new MutationObserver(() => main.classList.remove("leave")).observe(root, { attributes: true, attributeFilter: ["lang"] });
 
-  // 3. Teléfono 3D: sigue al cursor (o al giroscopio en móvil) con profundidad y brillo
+  // 3. Teléfono 3D: todo el aparato (marco y pantalla) se inclina junto, con un ángulo moderado
   const phone = $(".phone")[0];
-  const scr = phone && $(".screen", phone)[0];
-  if (scr) {
+  if (phone) {
     const tilt = (rx, ry, gx, gy) => {
-      scr.style.setProperty("--rx", rx.toFixed(1) + "deg");
-      scr.style.setProperty("--ry", ry.toFixed(1) + "deg");
-      scr.style.setProperty("--gx", gx.toFixed(0) + "%");
-      scr.style.setProperty("--gy", gy.toFixed(0) + "%");
+      phone.style.setProperty("--rx", rx.toFixed(1) + "deg");
+      phone.style.setProperty("--ry", ry.toFixed(1) + "deg");
+      phone.style.setProperty("--gx", gx.toFixed(0) + "%");
+      phone.style.setProperty("--gy", gy.toFixed(0) + "%");
     };
-    if (fine)
+    if (fine) {
       addEventListener(
         "pointermove",
         (e) => {
           const r = phone.getBoundingClientRect();
           const nx = clamp((e.clientX - (r.left + r.width / 2)) / (innerWidth / 2), -1, 1);
           const ny = clamp((e.clientY - (r.top + r.height / 2)) / (innerHeight / 2), -1, 1);
-          tilt(-ny * 12, nx * 14, 50 + nx * 40, 50 + ny * 40);
+          tilt(-ny * 7, nx * 8, 50 + nx * 40, 50 + ny * 40);
         },
         { passive: true },
       );
+      document.addEventListener("mouseleave", () => tilt(0, 0, 50, 0));
+    }
     addEventListener(
       "deviceorientation",
       (e) => {
         if (e.gamma == null || e.beta == null) return;
         const b = e.beta - 55;
-        tilt(clamp(b * 0.35, -12, 12), clamp(e.gamma * 0.4, -14, 14), 50 + clamp(e.gamma, -30, 30), 50 + clamp(b, -30, 30));
+        tilt(clamp(b * 0.2, -6, 6), clamp(e.gamma * 0.25, -8, 8), 50 + clamp(e.gamma, -30, 30), 50 + clamp(b, -30, 30));
       },
       { passive: true },
     );
