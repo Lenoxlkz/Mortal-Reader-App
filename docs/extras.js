@@ -98,19 +98,19 @@
     });
   }
   new MutationObserver(render).observe(root, { attributes: true, attributeFilter: ["lang"] });
-  const io =
-    "IntersectionObserver" in window
-      ? new IntersectionObserver(
-          (entries) =>
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                e.target.classList.add("in");
-                io.unobserve(e.target);
-              }
-            }),
-          { threshold: 0.12 },
-        )
-      : null;
-  document.querySelectorAll(".reveal").forEach((n) => (io ? io.observe(n) : n.classList.add("in")));
   render();
+
+  // Movimiento: motion.css primero, luego motion.js. Si falla, las secciones se muestran igual.
+  const showAll = () => document.querySelectorAll(".reveal").forEach((n) => n.classList.add("in"));
+  const css = document.createElement("link");
+  css.rel = "stylesheet";
+  css.href = "motion.css";
+  css.onload = () => {
+    const js = document.createElement("script");
+    js.src = "motion.js";
+    js.onerror = showAll;
+    document.body.append(js);
+  };
+  css.onerror = showAll;
+  document.head.append(css);
 })();
