@@ -1,0 +1,11 @@
+:root{--font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;--spring:cubic-bezier(.34,1.56,.64,1);--white:#fff;--gray:#a1a1aa;color-scheme:dark}
+html body,html button,html input{font-family:var(--font)}
+html h1,html h2,html h3,html .wordmark,html .serif,html .btn,html .gh-btn,html .brand,html .lang button,html .stat strong{font-family:var(--font)}
+html .eyebrow,html .chip,html .status,html .note,html [data-count-line]{font-family:var(--mono)}
+html .wordmark{font-weight:300}
+html h1,html h2,html h3,html .wordmark,html .brand,html .btn,html .gh-btn,html .stat strong{color:var(--white)}
+html .btn.solid{color:#0a0a0a}
+html p,html .lede,html .quiet,html .note,html .notice,html .eyebrow,html .row-name,html .foot p{color:var(--gray)}
+html .hero{grid-template-columns:1fr}
+html .phone-sec{margin-top:4rem;padding:3rem 0 3.5rem;display:grid;justify-items:center}
+html .phone-sec .phone{width:min(30rem,100%);margin:0;animation:float 6s ease-in-out infinite}

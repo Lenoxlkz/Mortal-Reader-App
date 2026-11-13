@@ -47,7 +47,7 @@
   new MutationObserver(() => main.classList.remove("leave")).observe(root, { attributes: true, attributeFilter: ["lang"] });
 
   // 3. Teléfono 3D: sigue al cursor (o al giroscopio en móvil) con profundidad y brillo
-  const phone = $(".hero .phone")[0];
+  const phone = $(".phone")[0];
   const scr = phone && $(".screen", phone)[0];
   if (scr) {
     const tilt = (rx, ry, gx, gy) => {

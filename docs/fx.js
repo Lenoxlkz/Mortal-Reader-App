@@ -99,7 +99,7 @@
     under.classList.add("under");
     over.classList.add("sheet");
   };
-  stage($(".hero")[0], shots);
+  stage($(".hero")[0], $(".phone-sec")[0]);
   stage($(".catalog")[0], $(".principles")[0]);
   const fit = () => $(".under").forEach((u) => u.style.setProperty("--st", Math.min(0, innerHeight - u.offsetHeight) + "px"));
 
