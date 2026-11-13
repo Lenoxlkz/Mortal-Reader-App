@@ -7,5 +7,9 @@ html h1,html h2,html h3,html .wordmark,html .brand,html .btn,html .gh-btn,html .
 html .btn.solid{color:#0a0a0a}
 html p,html .lede,html .quiet,html .note,html .notice,html .eyebrow,html .row-name,html .foot p{color:var(--gray)}
 html .hero{grid-template-columns:1fr}
-html .phone-sec{margin-top:4rem;padding:3rem 0 3.5rem;display:grid;justify-items:center}
-html .phone-sec .phone{width:min(30rem,100%);margin:0;animation:float 6s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -10px}}
+html .phone-sec{margin-top:4rem;padding:3.5rem 1rem 4rem;display:grid;justify-items:center;overflow:visible}
+html .phone-sec .phone{width:min(30rem,100%);margin:0;overflow:visible;perspective:none;transform-style:flat;transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .3s var(--ease,cubic-bezier(.22,.9,.28,1));animation:bob 6s ease-in-out infinite}
+html .phone-sec .phone .screen{transform:none;transform-style:flat;transition:none}
+html .phone-sec .phone .rows li,html .phone-sec .phone .screen-top,html .phone-sec .phone .phone-note{translate:none}
+@media(prefers-reduced-motion:reduce){html .phone-sec .phone{transform:none}}
