@@ -13,3 +13,7 @@ html .phone-sec .phone{width:min(30rem,100%);margin:0;overflow:visible;perspecti
 html .phone-sec .phone .screen{transform:none;transform-style:flat;transition:none}
 html .phone-sec .phone .rows li,html .phone-sec .phone .screen-top,html .phone-sec .phone .phone-note{translate:none}
 @media(prefers-reduced-motion:reduce){html .phone-sec .phone{transform:none}}
+html .sheet.under{position:sticky;top:var(--st,0)}
+html .stage>.sheet{margin-top:0}
+html .hub{padding-bottom:2.5rem}
+html .hub .catalog{margin-top:2.5rem}
