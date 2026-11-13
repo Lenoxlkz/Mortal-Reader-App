@@ -100,17 +100,25 @@
   new MutationObserver(render).observe(root, { attributes: true, attributeFilter: ["lang"] });
   render();
 
-  // Movimiento: motion.css primero, luego motion.js. Si falla, las secciones se muestran igual.
+  // Movimiento: motion.css y fx.css primero, luego motion.js y después fx.js.
+  // Si algo falla, las secciones se muestran igual.
   const showAll = () => document.querySelectorAll(".reveal").forEach((n) => n.classList.add("in"));
-  const css = document.createElement("link");
-  css.rel = "stylesheet";
-  css.href = "motion.css";
-  css.onload = () => {
-    const js = document.createElement("script");
-    js.src = "motion.js";
-    js.onerror = showAll;
-    document.body.append(js);
+  const sheet = (href) => {
+    const l = document.createElement("link");
+    l.rel = "stylesheet";
+    l.href = href;
+    document.head.append(l);
+    return l;
   };
+  const script = (src, ok, bad) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = ok;
+    s.onerror = bad;
+    document.body.append(s);
+  };
+  sheet("fx.css");
+  const css = sheet("motion.css");
+  css.onload = () => script("motion.js", () => script("fx.js"), showAll);
   css.onerror = showAll;
-  document.head.append(css);
 })();
