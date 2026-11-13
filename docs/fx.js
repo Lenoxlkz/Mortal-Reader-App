@@ -89,18 +89,31 @@
     });
   };
 
-  // 3. Secciones que se superponen: la de abajo sube y tapa a la de arriba
-  const stage = (under, over) => {
-    if (!under || !over) return;
+  // 3. Secciones que se superponen en cadena: cada una sube y tapa a la anterior
+  const stage = (...els) => {
+    if (els.some((e) => !e)) return;
     const st = document.createElement("div");
     st.className = "stage";
-    under.before(st);
-    st.append(under, over);
-    under.classList.add("under");
-    over.classList.add("sheet");
+    els[0].before(st);
+    st.append(...els);
+    els.forEach((e, i) => {
+      if (i < els.length - 1) e.classList.add("under");
+      if (i) e.classList.add("sheet");
+      e.style.zIndex = i;
+    });
   };
-  stage($(".hero")[0], $(".phone-sec")[0]);
-  stage($(".catalog")[0], $(".principles")[0]);
+  // Versión + catálogo pasan a ser una sola sección
+  const stats = $(".stats")[0];
+  const cat = $(".catalog")[0];
+  let hub = null;
+  if (stats && cat) {
+    hub = document.createElement("div");
+    hub.className = "hub";
+    stats.before(hub);
+    hub.append(...[stats, $("[data-note]")[0], cat].filter(Boolean));
+  }
+  stage($(".hero")[0], $(".phone-sec")[0], shots); // hero → teléfono → galería
+  stage(hub, $(".principles")[0]); // versión + catálogo → principios
   const fit = () => $(".under").forEach((u) => u.style.setProperty("--st", Math.min(0, innerHeight - u.offsetHeight) + "px"));
 
   let tk = false;
