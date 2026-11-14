@@ -1,4 +1,9 @@
 .suggest-modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  z-index: 1000;
   width: min(36rem, calc(100% - 1.5rem));
   max-height: calc(100dvh - 1.5rem);
   padding: 0;
@@ -9,10 +14,30 @@
   box-shadow: 0 30px 80px rgb(0 0 0 / 0.65);
 }
 
-.suggest-modal::backdrop {
+.suggest-modal[open] {
+  animation: suggestIn 0.4s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+}
+
+@keyframes suggestIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+}
+
+.suggest-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
   background: rgb(0 0 0 / 0.72);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+  animation: scrimIn 0.25s ease both;
+}
+
+@keyframes scrimIn {
+  from { opacity: 0; }
+}
+
+html.suggest-open {
+  overflow: hidden;
 }
 
 .suggest-card {
@@ -97,6 +122,16 @@
   min-height: 2.75rem;
 }
 
+.suggest-captcha {
+  display: flex;
+  justify-content: center;
+  min-height: 78px;
+}
+
+.suggest-captcha[hidden] {
+  display: none;
+}
+
 .suggest-note {
   min-height: 1.2rem;
   margin: 0;
@@ -111,6 +146,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
+}
+
+.suggest-actions .btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .suggest-trap {
