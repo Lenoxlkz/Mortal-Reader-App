@@ -61,6 +61,11 @@
       });
     });
 
+  // Altura estable: en el móvil la barra del navegador aparece y desaparece al hacer scroll
+  // y cambia innerHeight. Si se usara en vivo, todo temblaría. Solo se actualiza con cambios reales.
+  let VW = innerWidth;
+  let VH = innerHeight;
+
   // 4 y 10. Scroll horizontal fijado: la galería avanza al bajar y retrocede al subir
   const shots = $(".shots")[0];
   const row = shots && $(".shot-row", shots)[0];
@@ -70,23 +75,38 @@
     pin.className = "hs-pin";
     pin.append(...shots.children);
     shots.append(pin);
+    // Todas las capturas se cargan de una vez: nada parpadea al entrar a la galería
+    const eager = () => $("img", row).forEach((i) => (i.loading = "eager"));
+    eager();
+    new MutationObserver(eager).observe(row, { childList: true });
   }
   const size = () => {
     if (!pin) return;
     const dist = Math.max(0, row.scrollWidth - row.clientWidth);
-    shots.style.height = pin.offsetHeight + dist + innerHeight * 0.5 + "px";
+    shots.style.height = pin.offsetHeight + dist + VH * 0.5 + "px";
   };
   const hsUpdate = () => {
     if (!pin) return;
-    const span = shots.offsetHeight - innerHeight;
+    const span = shots.offsetHeight - VH;
     const p = span > 0 ? clamp(-shots.getBoundingClientRect().top / span, 0, 1) : 0;
     row.scrollLeft = p * (row.scrollWidth - row.clientWidth);
     const rr = row.getBoundingClientRect();
     const cx = rr.left + rr.width / 2;
-    $(".shot", row).forEach((f) => {
+    const figs = $(".shot", row);
+    let best = 0;
+    let bd = Infinity;
+    figs.forEach((f, i) => {
       const b = f.getBoundingClientRect();
-      f.style.setProperty("--dx", (((b.left + b.width / 2 - cx) / rr.width) * -16).toFixed(1) + "%"); // 10. parallax
+      const d = b.left + b.width / 2 - cx;
+      f.style.setProperty("--dx", ((d / rr.width) * -16).toFixed(1) + "%"); // 10. parallax
+      if (Math.abs(d) < bd) {
+        bd = Math.abs(d);
+        best = i;
+      }
     });
+    // La captura activa se decide aquí (la más cercana al centro): sin parpadeos
+    figs.forEach((f, i) => f.classList.toggle("near", i === best));
+    $(".dots i", pin).forEach((d, i) => d.classList.toggle("cur", i === best));
   };
 
   // 3. Secciones que se superponen en cadena: cada una sube y tapa a la anterior
@@ -114,7 +134,7 @@
   }
   stage($(".hero")[0], $(".phone-sec")[0], shots); // hero → teléfono → galería
   stage(hub, $(".principles")[0]); // versión + catálogo → principios
-  const fit = () => $(".under").forEach((u) => u.style.setProperty("--st", Math.min(0, innerHeight - u.offsetHeight) + "px"));
+  const fit = () => $(".under").forEach((u) => u.style.setProperty("--st", Math.min(0, VH - u.offsetHeight) + "px"));
 
   let tk = false;
   const onS = () => {
@@ -131,7 +151,12 @@
     onS();
   };
   addEventListener("scroll", onS, { passive: true });
-  addEventListener("resize", refresh);
+  addEventListener("resize", () => {
+    if (innerWidth === VW && Math.abs(innerHeight - VH) < 160) return; // solo la barra del navegador
+    VW = innerWidth;
+    VH = innerHeight;
+    refresh();
+  });
   addEventListener("load", refresh);
   if (pin && "ResizeObserver" in window) new ResizeObserver(refresh).observe(pin);
   new MutationObserver(() => setTimeout(refresh, 120)).observe(root, { attributes: true, attributeFilter: ["lang"] });

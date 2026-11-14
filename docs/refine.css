@@ -6,7 +6,7 @@ html .wordmark{font-weight:300}
 html h1,html h2,html h3,html .wordmark,html .brand,html .btn,html .gh-btn,html .stat strong{color:var(--white)}
 html .btn.solid{color:#0a0a0a}
 html p,html .lede,html .quiet,html .note,html .notice,html .eyebrow,html .row-name,html .foot p{color:var(--gray)}
-html .hero{grid-template-columns:1fr}
+html .hero{grid-template-columns:1fr;padding-bottom:clamp(5rem,16vh,9rem)}
 @keyframes bob{50%{translate:0 -10px}}
 html .phone-sec{margin-top:4rem;padding:3.5rem 1rem 4rem;display:grid;justify-items:center;overflow:visible}
 html .phone-sec .phone{width:min(30rem,100%);margin:0;overflow:visible;perspective:none;transform-style:flat;transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .3s var(--ease,cubic-bezier(.22,.9,.28,1));animation:bob 6s ease-in-out infinite}
@@ -17,3 +17,11 @@ html .sheet.under{position:sticky;top:var(--st,0)}
 html .stage>.sheet{margin-top:0}
 html .hub{padding-bottom:2.5rem}
 html .hub .catalog{margin-top:2.5rem}
+html #contenido{position:relative;z-index:1}
+html .mark-bg{z-index:0}
+html.js .shots [data-s],html.js .shots [data-t]{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+html .hs-pin .shot{opacity:.55;transform:scale(.94);box-shadow:0 12px 30px rgb(0 0 0/.5);animation:none;transition:opacity .45s var(--ease,cubic-bezier(.22,.9,.28,1)),transform .45s var(--ease,cubic-bezier(.22,.9,.28,1))}
+html .hs-pin .shot.near{opacity:1;transform:none;box-shadow:0 26px 60px rgb(0 0 0/.6),0 0 40px rgb(225 6 0/.16)}
+html .hs-pin .dots i.on{width:.4rem;background:var(--edge)}
+html .hs-pin .dots i.cur{width:1.4rem;background:var(--accent)}
+html .shot img{will-change:transform;backface-visibility:hidden}
