@@ -59,6 +59,12 @@
   const note = document.querySelector("[data-suggest-note]");
   if (!modal || !form || !opener) return;
   const send = form.querySelector("[data-suggest-send]");
+  const coarse = matchMedia("(pointer: coarse)").matches;
+
+  // El desafío del captcha nunca debe ensanchar la página
+  document.documentElement.style.overflowX = "clip";
+  // Que nada abra el teclado por su cuenta: solo cuando la persona toque el campo
+  form.querySelectorAll("[autofocus]").forEach((n) => n.removeAttribute("autofocus"));
 
   // ---- reCAPTCHA v2 ----
   const box = document.createElement("div");
@@ -123,6 +129,43 @@
     };
     document.head.append(s);
   }
+
+  // ---- Desafío de imágenes: siempre centrado, fijo y ajustado a la pantalla ----
+  const FRAME = 'iframe[title*="recaptcha challenge"]';
+  let fitting = false;
+  let challengeWatch = null;
+  let watched = null;
+  function fitChallenge() {
+    if (fitting) return;
+    const frame = document.querySelector(FRAME);
+    const wrap = frame && frame.parentElement;
+    if (!wrap) return;
+    if (getComputedStyle(wrap).visibility === "hidden" || wrap.offsetWidth < 50) return; // aún no está visible
+    fitting = true;
+    const k = Math.min(1, (innerWidth - 16) / wrap.offsetWidth, (innerHeight - 16) / wrap.offsetHeight);
+    const st = wrap.style;
+    st.setProperty("position", "fixed", "important");
+    st.setProperty("top", "50%", "important");
+    st.setProperty("left", "50%", "important");
+    st.setProperty("right", "auto", "important");
+    st.setProperty("margin", "0", "important");
+    st.setProperty("transform", `translate(-50%, -50%) scale(${k.toFixed(3)})`, "important");
+    if (challengeWatch) challengeWatch.takeRecords(); // ignora los cambios que acabo de hacer
+    fitting = false;
+  }
+  new MutationObserver(() => {
+    const frame = document.querySelector(FRAME);
+    if (!frame) return;
+    const outer = [...document.body.children].find((n) => n.contains(frame));
+    if (!outer || outer === watched) return;
+    watched = outer;
+    if (challengeWatch) challengeWatch.disconnect();
+    // Google reescribe estos estilos al mostrar o mover el desafío: se vuelve a centrar cada vez
+    challengeWatch = new MutationObserver(fitChallenge);
+    challengeWatch.observe(outer, { attributes: true, subtree: true, attributeFilter: ["style", "class"] });
+    fitChallenge();
+  }).observe(document.body, { childList: true });
+  addEventListener("resize", fitChallenge);
 
   // ---- Modal (no modal nativo, para que el desafío del captcha quede por encima) ----
   let scrim = null;
@@ -193,8 +236,16 @@
       if (send) send.disabled = true;
       loadCaptcha();
     }
-    const area = form.querySelector("[data-suggest-text]");
-    if (area) area.focus();
+    if (coarse) {
+      // En el móvil no se abre el teclado solo: así se ve el formulario completo y la casilla
+      const active = document.activeElement;
+      if (active && modal.contains(active)) active.blur();
+      modal.setAttribute("tabindex", "-1");
+      modal.focus({ preventScroll: true });
+    } else {
+      const area = form.querySelector("[data-suggest-text]");
+      if (area) area.focus({ preventScroll: true });
+    }
   });
 
   modal.querySelectorAll("[data-suggest-close]").forEach((node) => {
