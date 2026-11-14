@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="ui.css" />
     <link rel="stylesheet" href="refine.css" />
     <link rel="stylesheet" href="suggest.css" />
+    <link rel="stylesheet" href="admin.css" />
   </head>
   <body>
     <div class="poster" data-poster aria-hidden="true"></div>
@@ -212,8 +213,14 @@
         </section>
 
         <footer class="foot">
-          <p data-i18n="foot">Mortal Reader ~ El contenido no es de esta app.</p>
-          <a data-repo href="https://github.com/Lenoxlkz/Mortal-Reader-App">Lenoxlkz / Mortal-Reader-App</a>
+          <div class="foot-text">
+            <p data-i18n="foot">Mortal Reader ~ El contenido no es de esta app.</p>
+            <a data-repo href="https://github.com/Lenoxlkz/Mortal-Reader-App">Lenoxlkz / Mortal-Reader-App</a>
+          </div>
+          <button type="button" class="admin-pill" data-admin-open aria-haspopup="dialog">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5zm-3 8h6V7a3 3 0 0 0-6 0z" /></svg>
+            <span data-admin-i18n="open">Panel admin</span>
+          </button>
         </footer>
       </div>
     </main>
@@ -223,26 +230,32 @@
           <h2 data-suggest-i18n="title">Sugerir un sitio web</h2>
           <button type="button" class="suggest-x" data-suggest-close aria-label="Cerrar">×</button>
         </div>
-        <p class="quiet" data-suggest-i18n="help">Escríbelo como se lo contarías a alguien. Qué sitio es, para leer o ver, y en qué idioma.</p>
-        <label class="suggest-field">
-          <span data-suggest-i18n="textLabel">Tu sugerencia</span>
-          <textarea name="text" data-suggest-text required minlength="12" maxlength="2000" placeholder="Por ejemplo: un sitio de novelas en inglés. Se llama … y el enlace es …"></textarea>
-        </label>
-        <label class="suggest-field">
-          <span data-suggest-i18n="urlLabel">Enlace del sitio, si lo tienes</span>
-          <input name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://" />
-        </label>
-        <fieldset class="suggest-langs">
-          <legend data-suggest-i18n="langLabel">Idioma del sitio</legend>
-          <label><input type="radio" name="siteLang" value="ES" /> ES</label>
-          <label><input type="radio" name="siteLang" value="EN" /> EN</label>
-          <label><input type="radio" name="siteLang" value="Multi" /> Multi</label>
-          <label><input type="radio" name="siteLang" value="" checked /> <span data-suggest-i18n="langAny">No lo sé</span></label>
-        </fieldset>
-        <label class="suggest-trap" aria-hidden="true">
-          <span>Company</span>
-          <input name="company" tabindex="-1" autocomplete="off" />
-        </label>
+        <div data-suggest-fields>
+          <p class="quiet" data-suggest-i18n="help">Escríbelo como se lo contarías a alguien. Qué sitio es, para leer o ver, y en qué idioma.</p>
+          <label class="suggest-field">
+            <span data-suggest-i18n="textLabel">Tu sugerencia</span>
+            <textarea name="text" data-suggest-text required minlength="12" maxlength="2000" placeholder="Por ejemplo: un sitio de novelas en inglés. Se llama … y el enlace es …"></textarea>
+          </label>
+          <label class="suggest-field">
+            <span data-suggest-i18n="urlLabel">Enlace del sitio, si lo tienes</span>
+            <input name="url" type="url" inputmode="url" autocomplete="off" placeholder="https://" />
+          </label>
+          <fieldset class="suggest-langs">
+            <legend data-suggest-i18n="langLabel">Idioma del sitio</legend>
+            <label><input type="radio" name="siteLang" value="ES" /> ES</label>
+            <label><input type="radio" name="siteLang" value="EN" /> EN</label>
+            <label><input type="radio" name="siteLang" value="Multi" /> Multi</label>
+            <label><input type="radio" name="siteLang" value="" checked /> <span data-suggest-i18n="langAny">No lo sé</span></label>
+          </fieldset>
+          <label class="suggest-trap" aria-hidden="true">
+            <span>Company</span>
+            <input name="company" tabindex="-1" autocomplete="off" />
+          </label>
+        </div>
+        <div class="suggest-blocked" data-suggest-blocked hidden>
+          <p data-suggest-i18n="blockedTitle">Sugerencias desactivadas</p>
+          <p class="quiet" data-suggest-i18n="blockedBody">El envío de sugerencias está bloqueado de manera indefinida.</p>
+        </div>
         <p class="suggest-note" data-suggest-note></p>
         <div class="suggest-actions">
           <button type="submit" class="btn solid" data-suggest-send>Enviar sugerencia</button>
@@ -250,9 +263,44 @@
         </div>
       </form>
     </dialog>
+    <dialog class="suggest-modal admin-modal" data-admin-modal>
+      <div class="suggest-card admin-card">
+        <div class="suggest-top">
+          <h2 data-admin-i18n="title">Panel de administración</h2>
+          <button type="button" class="suggest-x" data-admin-close aria-label="Cerrar">×</button>
+        </div>
+        <form class="admin-login" data-admin-login>
+          <p class="quiet" data-admin-i18n="loginHelp">Inicia sesión para controlar el envío de sugerencias.</p>
+          <label class="suggest-field">
+            <span data-admin-i18n="userLabel">Usuario</span>
+            <input name="username" type="text" autocomplete="username" required />
+          </label>
+          <label class="suggest-field">
+            <span data-admin-i18n="passLabel">Contraseña</span>
+            <input name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <p class="suggest-note" data-admin-login-note></p>
+          <div class="suggest-actions">
+            <button type="submit" class="btn solid" data-admin-login-send data-admin-i18n="loginSend">Entrar</button>
+          </div>
+        </form>
+        <div class="admin-panel" data-admin-panel hidden>
+          <p class="quiet" data-admin-i18n="panelHelp">Controla si la página puede recibir sugerencias nuevas.</p>
+          <div class="admin-status">
+            <span class="admin-dot" data-admin-dot aria-hidden="true"></span>
+            <span data-admin-status-text>—</span>
+          </div>
+          <div class="suggest-actions">
+            <button type="button" class="btn solid" data-admin-toggle>—</button>
+          </div>
+          <p class="suggest-note" data-admin-panel-note></p>
+        </div>
+      </div>
+    </dialog>
     <script src="app.js"></script>
     <script src="extras.js" defer></script>
     <script src="ui.js" defer></script>
     <script src="suggest.js" defer></script>
+    <script src="admin.js" defer></script>
   </body>
 </html>
