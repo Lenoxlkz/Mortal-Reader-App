@@ -5,7 +5,7 @@
   const ENDPOINT = "https://mortal-suggest.lenoxlkzsdy.workers.dev";
   // Clave PÚBLICA (site key) de reCAPTCHA v2 "Casilla". Si está vacía, no se muestra el captcha.
   // La clave secreta NUNCA va aquí: va como secreto RECAPTCHA_SECRET en el Worker.
-  const SITE_KEY = "";
+  const SITE_KEY = "6LdQfR8uAAAAAM0KSqHrnT6o1rWdOscu09-Fhty6";
   const COPY = {
     es: {
       button: "Enviar sugerencia para añadir sitios web",
