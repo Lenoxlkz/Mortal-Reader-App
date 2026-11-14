@@ -3,6 +3,9 @@
   // URL del Worker de Cloudflare que crea el issue (ver worker/README.md).
   // Si está vacía, o si el Worker falla, se abre GitHub con el issue ya escrito.
   const ENDPOINT = "https://mortal-suggest.lenoxlkzsdy.workers.dev";
+  // Clave PÚBLICA (site key) de reCAPTCHA v2 "Casilla". Si está vacía, no se muestra el captcha.
+  // La clave secreta NUNCA va aquí: va como secreto RECAPTCHA_SECRET en el Worker.
+  const SITE_KEY = "";
   const COPY = {
     es: {
       button: "Enviar sugerencia para añadir sitios web",
@@ -22,6 +25,8 @@
       rate: "Enviaste varias sugerencias seguidas. Inténtalo de nuevo más tarde.",
       fail: "No se pudo enviar. Inténtalo de nuevo en un momento.",
       wait: "Enviando…",
+      captcha: "Marca «No soy un robot» para poder enviar.",
+      captchaBad: "No pudimos verificar el captcha. Inténtalo otra vez.",
     },
     en: {
       button: "Send a suggestion to add a website",
@@ -41,6 +46,8 @@
       rate: "You sent several suggestions in a row. Try again later.",
       fail: "It could not be sent. Try again in a moment.",
       wait: "Sending…",
+      captcha: "Check “I'm not a robot” to send.",
+      captchaBad: "We could not verify the captcha. Try again.",
     },
   };
 
@@ -51,6 +58,92 @@
   const opener = document.querySelector("[data-suggest]");
   const note = document.querySelector("[data-suggest-note]");
   if (!modal || !form || !opener) return;
+  const send = form.querySelector("[data-suggest-send]");
+
+  // ---- reCAPTCHA v2 ----
+  const box = document.createElement("div");
+  box.className = "suggest-captcha";
+  box.hidden = true;
+  if (SITE_KEY) (note ? note.before(box) : form.append(box));
+  let widget = null;
+  let ready = false;
+  let failed = false;
+  let loadedLang = "";
+
+  // El botón Enviar queda desactivado hasta que el captcha esté resuelto
+  function refreshSend() {
+    if (!send) return;
+    const solved = widget !== null && window.grecaptcha && window.grecaptcha.getResponse(widget);
+    send.disabled = !(!SITE_KEY || failed || !ready || solved);
+  }
+
+  function draw() {
+    if (!window.grecaptcha || !window.grecaptcha.render) return;
+    box.hidden = false;
+    if (widget === null) {
+      widget = window.grecaptcha.render(box, {
+        sitekey: SITE_KEY,
+        theme: "dark",
+        size: innerWidth < 380 ? "compact" : "normal",
+        callback: refreshSend,
+        "expired-callback": refreshSend,
+        "error-callback": refreshSend,
+      });
+    } else {
+      window.grecaptcha.reset(widget);
+    }
+    ready = true;
+    refreshSend();
+  }
+
+  function loadCaptcha() {
+    if (!SITE_KEY) return;
+    const hl = lang();
+    if (window.grecaptcha && window.grecaptcha.render && loadedLang === hl) {
+      draw();
+      return;
+    }
+    // (Re)carga el script en el idioma actual
+    document.querySelectorAll("script[data-rc]").forEach((s) => s.remove());
+    window.grecaptcha = undefined;
+    widget = null;
+    ready = false;
+    failed = false;
+    box.replaceChildren();
+    loadedLang = hl;
+    window.mortalCaptcha = draw;
+    const s = document.createElement("script");
+    s.dataset.rc = "";
+    s.async = true;
+    s.src = `https://www.google.com/recaptcha/api.js?render=explicit&hl=${hl}&onload=mortalCaptcha`;
+    s.onerror = () => {
+      failed = true; // sin captcha (bloqueado): se usa el plan B de GitHub
+      box.hidden = true;
+      refreshSend();
+    };
+    document.head.append(s);
+  }
+
+  // ---- Modal (no modal nativo, para que el desafío del captcha quede por encima) ----
+  let scrim = null;
+  function openModal() {
+    scrim = document.createElement("div");
+    scrim.className = "suggest-scrim";
+    scrim.addEventListener("click", () => modal.close());
+    document.body.append(scrim);
+    document.documentElement.classList.add("suggest-open");
+    if (typeof modal.show === "function") modal.show();
+    else modal.setAttribute("open", "");
+  }
+  modal.addEventListener("close", () => {
+    if (scrim) scrim.remove();
+    scrim = null;
+    document.documentElement.classList.remove("suggest-open");
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.open) modal.close();
+  });
+  modal.addEventListener("wheel", (e) => e.stopPropagation(), { passive: true });
 
   function apply() {
     document.querySelectorAll("[data-suggest-i18n]").forEach((node) => {
@@ -62,7 +155,6 @@
     document.querySelectorAll("[data-suggest-close]").forEach((node) => {
       if (node.classList.contains("suggest-x")) node.setAttribute("aria-label", t("close"));
     });
-    const send = form.querySelector("[data-suggest-send]");
     if (send) send.textContent = t("send");
   }
 
@@ -96,8 +188,11 @@
   opener.addEventListener("click", () => {
     say("");
     apply();
-    if (typeof modal.showModal === "function") modal.showModal();
-    else modal.setAttribute("open", "");
+    openModal();
+    if (SITE_KEY) {
+      if (send) send.disabled = true;
+      loadCaptcha();
+    }
     const area = form.querySelector("[data-suggest-text]");
     if (area) area.focus();
   });
@@ -121,22 +216,31 @@
     }
     const title = titleFrom(text);
     const body = bodyFrom(text, url, siteLang);
-    if (!ENDPOINT) {
+    const token = ready && widget !== null && window.grecaptcha ? window.grecaptcha.getResponse(widget) : "";
+    if (SITE_KEY && ready && !token) {
+      say(t("captcha"), "bad");
+      return;
+    }
+    // Sin Worker, o sin captcha disponible (bloqueado): plan B con GitHub
+    if (!ENDPOINT || (SITE_KEY && !token)) {
       openGithub(title, body);
       say(t("opened"), "ok");
       return;
     }
-    const send = form.querySelector("[data-suggest-send]");
     if (send) send.disabled = true;
     say(t("wait"));
     try {
       const response = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, url, siteLang, lang: lang(), company: "" }),
+        body: JSON.stringify({ text, url, siteLang, lang: lang(), company: "", captcha: token }),
       });
       if (response.status === 429) {
         say(t("rate"), "bad");
+        return;
+      }
+      if (response.status === 403) {
+        say(t("captchaBad"), "bad");
         return;
       }
       if (!response.ok) throw new Error(String(response.status));
@@ -148,10 +252,14 @@
       openGithub(title, body); // plan B: GitHub con el issue ya escrito
       say(t("opened"), "ok");
     } finally {
-      if (send) send.disabled = false;
+      if (widget !== null && window.grecaptcha) window.grecaptcha.reset(widget); // cada token sirve una vez
+      refreshSend();
     }
   });
 
-  new MutationObserver(apply).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  new MutationObserver(() => {
+    apply();
+    if (SITE_KEY && modal.open) loadCaptcha(); // vuelve a dibujar el captcha en el idioma nuevo
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   apply();
 })();

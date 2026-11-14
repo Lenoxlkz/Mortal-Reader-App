@@ -1,9 +1,10 @@
 // Mortal Reader · Worker que crea el issue de una sugerencia de sitio web.
 // El token vive solo aquí, como secreto de Cloudflare. Nunca llega al navegador.
 //
-// Secreto:   GITHUB_TOKEN   (fine-grained, solo permiso Issues en este repo)
-// Variables: REPO           (por defecto Lenoxlkz/Mortal-Reader-App)
-//            ALLOWED_ORIGIN (por defecto https://lenoxlkz.github.io)
+// Secretos:  GITHUB_TOKEN      (fine-grained, solo permiso Issues en este repo)
+//            RECAPTCHA_SECRET  (clave secreta de reCAPTCHA v2)
+// Variables: REPO              (por defecto Lenoxlkz/Mortal-Reader-App)
+//            ALLOWED_ORIGIN    (por defecto https://lenoxlkz.github.io)
 // Opcional:  KV enlazado como RATE (limita a 5 sugerencias por hora por IP)
 
 const MAX_TEXT = 2000;
@@ -21,7 +22,7 @@ const corsHeaders = (allowed) => ({
 const reply = (data, status, headers) =>
   new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json", ...headers } });
 
-// Evita menciones (@usuario) y referencias que notifiquen a otras personas
+// Evita menciones (@usuario) que notifiquen a otras personas
 const clean = (s) => s.replace(/@/g, "@\u200b").replace(/\r/g, "");
 
 export default {
@@ -53,8 +54,24 @@ export default {
       url = "";
     }
 
+    const ip = request.headers.get("CF-Connecting-IP") || "";
+
+    // reCAPTCHA v2: se verifica en el servidor con la clave secreta
+    if (env.RECAPTCHA_SECRET) {
+      const token = String(d.captcha || "");
+      if (!token) return reply({ error: "captcha" }, 403, h);
+      const check = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ secret: env.RECAPTCHA_SECRET, response: token, remoteip: ip }),
+      });
+      const result = await check.json().catch(() => ({}));
+      const host = new URL(allowed).hostname;
+      if (!result.success || (result.hostname && result.hostname !== host)) return reply({ error: "captcha" }, 403, h);
+    }
+
     if (env.RATE) {
-      const key = "ip:" + (request.headers.get("CF-Connecting-IP") || "x");
+      const key = "ip:" + (ip || "x");
       const n = parseInt((await env.RATE.get(key)) || "0", 10);
       if (n >= 5) return reply({ error: "rate" }, 429, h);
       await env.RATE.put(key, String(n + 1), { expirationTtl: 3600 });
