@@ -28,6 +28,8 @@
       wait: "Enviando…",
       captcha: "Espera a que termine la verificación para poder enviar.",
       captchaBad: "No pudimos verificar que eres una persona. Inténtalo otra vez.",
+      blockedTitle: "Sugerencias desactivadas",
+      blockedBody: "El envío de sugerencias está bloqueado de manera indefinida.",
     },
     en: {
       button: "Send a suggestion to add a website",
@@ -49,6 +51,8 @@
       wait: "Sending…",
       captcha: "Wait for the verification to finish to send.",
       captchaBad: "We could not verify you are a person. Try again.",
+      blockedTitle: "Suggestions are turned off",
+      blockedBody: "Sending suggestions is blocked indefinitely.",
     },
   };
 
@@ -58,6 +62,8 @@
   const form = document.querySelector("[data-suggest-form]");
   const opener = document.querySelector("[data-suggest]");
   const note = document.querySelector("[data-suggest-note]");
+  const fields = document.querySelector("[data-suggest-fields]");
+  const blockedBox = document.querySelector("[data-suggest-blocked]");
   if (!modal || !form || !opener) return;
   const send = form.querySelector("[data-suggest-send]");
   const coarse = matchMedia("(pointer: coarse)").matches;
@@ -74,6 +80,7 @@
   let ready = false;
   let failed = false;
   let loading = false;
+  let blocked = false;
 
   // El botón Enviar queda desactivado hasta que la verificación termine
   function refreshSend() {
@@ -178,6 +185,31 @@
     else delete note.dataset.kind;
   }
 
+  // Cambia entre el formulario normal y el aviso de "bloqueado indefinidamente"
+  function showBlocked(isBlocked) {
+    blocked = isBlocked;
+    if (fields) fields.hidden = isBlocked;
+    if (blockedBox) blockedBox.hidden = !isBlocked;
+    if (send) send.hidden = isBlocked;
+    if (isBlocked) {
+      box.hidden = true;
+      say("");
+    }
+  }
+
+  // Consulta pública: ¿el Worker tiene las sugerencias habilitadas ahora mismo?
+  async function checkBlocked() {
+    if (!ENDPOINT) return false;
+    try {
+      const r = await fetch(`${ENDPOINT}/admin/status`, { cache: "no-store" });
+      if (!r.ok) return false;
+      const d = await r.json();
+      return d.enabled === false;
+    } catch {
+      return false;
+    }
+  }
+
   function titleFrom(text) {
     const line = text.split("\n").map((part) => part.trim()).find(Boolean) || "Sitio web";
     const short = line.length > 72 ? `${line.slice(0, 69)}…` : line;
@@ -198,11 +230,13 @@
     window.open(`https://github.com/${REPO}/issues/new?${query}`, "_blank", "noopener");
   }
 
-  opener.addEventListener("click", () => {
+  opener.addEventListener("click", async () => {
     say("");
     apply();
+    const isBlocked = await checkBlocked();
+    showBlocked(isBlocked);
     openModal();
-    if (SITE_KEY) {
+    if (!isBlocked && SITE_KEY) {
       if (send) send.disabled = true;
       loadCaptcha();
     }
@@ -212,7 +246,7 @@
       if (active && modal.contains(active)) active.blur();
       modal.setAttribute("tabindex", "-1");
       modal.focus({ preventScroll: true });
-    } else {
+    } else if (!isBlocked) {
       const area = form.querySelector("[data-suggest-text]");
       if (area) area.focus({ preventScroll: true });
     }
@@ -224,6 +258,7 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (blocked) return;
     if (form.company && form.company.value) {
       say(t("sent"), "ok");
       return;
@@ -260,11 +295,22 @@
         say(t("rate"), "bad");
         return;
       }
-      if (response.status === 403) {
-        say(t("captchaBad"), "bad");
-        return;
+      if (!response.ok) {
+        let errorKind = "";
+        try {
+          const errData = await response.json();
+          errorKind = errData && errData.error;
+        } catch {}
+        if (errorKind === "disabled") {
+          showBlocked(true);
+          return;
+        }
+        if (response.status === 403) {
+          say(t("captchaBad"), "bad");
+          return;
+        }
+        throw new Error(String(response.status));
       }
-      if (!response.ok) throw new Error(String(response.status));
       const data = await response.json();
       form.reset();
       say(data.number ? `${t("sent")} #${data.number}` : t("sent"), "ok");
@@ -281,7 +327,7 @@
 
   new MutationObserver(() => {
     apply();
-    if (SITE_KEY && modal.open) loadCaptcha(); // vuelve a dibujar el widget en el idioma nuevo
+    if (SITE_KEY && modal.open && !blocked) loadCaptcha(); // vuelve a dibujar el widget en el idioma nuevo
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   apply();
 })();
