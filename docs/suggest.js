@@ -28,6 +28,7 @@
       wait: "Enviando…",
       captcha: "Espera a que termine la verificación para poder enviar.",
       captchaBad: "No pudimos verificar que eres una persona. Inténtalo otra vez.",
+      captchaSlow: "La verificación no terminó. Al enviar, se abre GitHub con el texto ya escrito.",
       blockedTitle: "Sugerencias desactivadas",
       blockedBody: "El envío de sugerencias está bloqueado de manera indefinida.",
     },
@@ -51,6 +52,7 @@
       wait: "Sending…",
       captcha: "Wait for the verification to finish to send.",
       captchaBad: "We could not verify you are a person. Try again.",
+      captchaSlow: "Verification did not finish. Sending will open GitHub with the text already written.",
       blockedTitle: "Suggestions are turned off",
       blockedBody: "Sending suggestions is blocked indefinitely.",
     },
@@ -81,10 +83,40 @@
   let failed = false;
   let loading = false;
   let blocked = false;
+  let watch = 0;
+
+  function paintGate(isOff) {
+    opener.hidden = isOff;
+    opener.disabled = isOff;
+    opener.setAttribute("aria-disabled", isOff ? "true" : "false");
+    if (isOff) opener.setAttribute("tabindex", "-1");
+    else opener.removeAttribute("tabindex");
+  }
+
+  function stopWatch() {
+    clearTimeout(watch);
+    watch = 0;
+  }
+
+  function armWatch() {
+    stopWatch();
+    watch = setTimeout(() => {
+      const solved = widget !== null && window.turnstile && window.turnstile.getResponse(widget);
+      if (blocked || solved) return;
+      failed = true;
+      box.hidden = true;
+      say(t("captchaSlow"), "bad");
+      refreshSend();
+    }, 12000);
+  }
 
   // El botón Enviar queda desactivado hasta que la verificación termine
   function refreshSend() {
     if (!send) return;
+    if (blocked) {
+      send.disabled = true;
+      return;
+    }
     const solved = widget !== null && window.turnstile && window.turnstile.getResponse(widget);
     send.disabled = !(!SITE_KEY || failed || !ready || solved);
   }
@@ -107,20 +139,27 @@
       theme: "dark",
       language: lang(),
       size: innerWidth < 380 ? "compact" : "normal",
-      callback: refreshSend,
+      callback: () => {
+        stopWatch();
+        if (note && note.dataset.kind === "wait") say("");
+        refreshSend();
+      },
       "expired-callback": refreshSend,
       "timeout-callback": refreshSend,
       "error-callback": () => {
+        stopWatch();
         failed = true; // Turnstile no pudo cargar: se usa el plan B de GitHub
+        box.hidden = true;
         refreshSend();
       },
     });
     ready = true;
     refreshSend();
+    armWatch();
   }
 
   function loadCaptcha() {
-    if (!SITE_KEY) return;
+    if (!SITE_KEY || blocked || !modal.open) return;
     if (window.turnstile && window.turnstile.render) {
       draw();
       return;
@@ -137,6 +176,7 @@
     s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=mortalTurnstile";
     s.onerror = () => {
       loading = false;
+      stopWatch();
       failed = true; // script bloqueado: plan B de GitHub
       box.hidden = true;
       refreshSend();
@@ -190,23 +230,41 @@
     blocked = isBlocked;
     if (fields) fields.hidden = isBlocked;
     if (blockedBox) blockedBox.hidden = !isBlocked;
-    if (send) send.hidden = isBlocked;
+    if (send) {
+      send.hidden = isBlocked;
+      if (isBlocked) send.disabled = true;
+    }
     if (isBlocked) {
+      stopWatch();
       box.hidden = true;
       say("");
+      paintGate(true);
     }
   }
 
-  // Consulta pública: ¿el Worker tiene las sugerencias habilitadas ahora mismo?
   async function checkBlocked() {
     if (!ENDPOINT) return false;
     try {
-      const r = await fetch(`${ENDPOINT}/admin/status`, { cache: "no-store" });
+      const r = await fetch(`${ENDPOINT}/admin/status`, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000),
+      });
       if (!r.ok) return false;
       const d = await r.json();
       return d.enabled === false;
     } catch {
       return false;
+    }
+  }
+
+  async function refreshGate() {
+    const isOff = await checkBlocked();
+    if (isOff) showBlocked(true);
+    else {
+      const was = blocked;
+      blocked = false;
+      paintGate(false);
+      if (was && modal.open) showBlocked(false);
     }
   }
 
@@ -230,14 +288,16 @@
     window.open(`https://github.com/${REPO}/issues/new?${query}`, "_blank", "noopener");
   }
 
-  opener.addEventListener("click", async () => {
+  opener.addEventListener("click", () => {
+    if (opener.disabled || blocked) return;
     say("");
     apply();
-    const isBlocked = await checkBlocked();
-    showBlocked(isBlocked);
+    showBlocked(false);
     openModal();
-    if (!isBlocked && SITE_KEY) {
+    if (SITE_KEY) {
       if (send) send.disabled = true;
+      say(t("captcha"), "wait");
+      armWatch();
       loadCaptcha();
     }
     if (coarse) {
@@ -246,7 +306,7 @@
       if (active && modal.contains(active)) active.blur();
       modal.setAttribute("tabindex", "-1");
       modal.focus({ preventScroll: true });
-    } else if (!isBlocked) {
+    } else {
       const area = form.querySelector("[data-suggest-text]");
       if (area) area.focus({ preventScroll: true });
     }
@@ -289,6 +349,7 @@
       const response = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(15000),
         body: JSON.stringify({ text, url, siteLang, lang: lang(), company: "", "cf-turnstile-response": token }),
       });
       if (response.status === 429) {
@@ -321,13 +382,18 @@
     } finally {
       // Cada token sirve una sola vez: se pide uno nuevo para poder reintentar
       if (widget !== null && window.turnstile) window.turnstile.reset(widget);
+      if (!failed) armWatch();
       refreshSend();
     }
   });
 
   new MutationObserver(() => {
     apply();
-    if (SITE_KEY && modal.open && !blocked) loadCaptcha(); // vuelve a dibujar el widget en el idioma nuevo
+    if (SITE_KEY && modal.open && !blocked) loadCaptcha();
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   apply();
+  refreshGate();
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshGate();
+  });
 })();

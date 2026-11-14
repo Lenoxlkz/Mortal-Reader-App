@@ -128,8 +128,12 @@ html.suggest-open {
   min-height: 78px;
 }
 
-.suggest-captcha[hidden] {
-  display: none;
+.suggest-captcha[hidden],
+.suggest-blocked[hidden],
+[data-suggest-fields][hidden],
+[data-suggest][hidden],
+.suggest-actions .btn[hidden] {
+  display: none !important;
 }
 
 .suggest-blocked {

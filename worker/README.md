@@ -46,9 +46,6 @@ GitHub → Settings → Developer settings → Fine-grained tokens → Generate.
 - Con acceso correcto, el panel muestra el estado actual (habilitadas /
   bloqueadas) y un botón para cambiarlo. El cambio se guarda en el KV
   `CONFIG` y aplica de inmediato para cualquier visitante.
-- Mientras está deshabilitado, el formulario de sugerencias de la página
-  muestra un aviso de "bloqueado de manera indefinida" en vez del
-  formulario, y el Worker también rechaza cualquier intento de envío
-  aunque alguien salte ese aviso.
+- Mientras está deshabilitado, el botón de sugerencias desaparece de la página. Si el modal ya estaba abierto, muestra el aviso de bloqueo indefinido y el botón de envío deja de poder usarse. El Worker también rechaza el envío.
 - Las credenciales no quedan guardadas en el navegador: hay que iniciar
   sesión otra vez cada vez que se abre el panel.
