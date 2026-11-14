@@ -2,7 +2,7 @@
   const REPO = "Lenoxlkz/Mortal-Reader-App";
   // URL del Worker de Cloudflare que crea el issue (ver worker/README.md).
   // Si está vacía, o si el Worker falla, se abre GitHub con el issue ya escrito.
-  const ENDPOINT = "mortal-suggest.lenoxlkzsdy.workers.dev";
+  const ENDPOINT = "https://mortal-suggest.lenoxlkzsdy.workers.dev";
   const COPY = {
     es: {
       button: "Enviar sugerencia para añadir sitios web",
