@@ -3,9 +3,10 @@
   // URL del Worker de Cloudflare que crea el issue (ver worker/README.md).
   // Si está vacía, o si el Worker falla, se abre GitHub con el issue ya escrito.
   const ENDPOINT = "https://mortal-suggest.lenoxlkzsdy.workers.dev";
-  // Clave PÚBLICA (site key) de reCAPTCHA v2 "Casilla". Si está vacía, no se muestra el captcha.
-  // La clave secreta NUNCA va aquí: va como secreto RECAPTCHA_SECRET en el Worker.
-  const SITE_KEY = "6LdQfR8uAAAAAM0KSqHrnT6o1rWdOscu09-Fhty6";
+  // Clave PÚBLICA (sitekey) de Cloudflare Turnstile. La clave secreta NUNCA va aquí:
+  // vive como secreto TURNSTILE_SECRET en el Worker, que es quien verifica el token.
+  const SITE_KEY = "0x4AAAAAAGAbxJGkTugsZhD9";
+  const ACTION = "suggest"; // el Worker comprueba que el token venga de esta acción
   const COPY = {
     es: {
       button: "Enviar sugerencia para añadir sitios web",
@@ -25,8 +26,8 @@
       rate: "Enviaste varias sugerencias seguidas. Inténtalo de nuevo más tarde.",
       fail: "No se pudo enviar. Inténtalo de nuevo en un momento.",
       wait: "Enviando…",
-      captcha: "Marca «No soy un robot» para poder enviar.",
-      captchaBad: "No pudimos verificar el captcha. Inténtalo otra vez.",
+      captcha: "Espera a que termine la verificación para poder enviar.",
+      captchaBad: "No pudimos verificar que eres una persona. Inténtalo otra vez.",
     },
     en: {
       button: "Send a suggestion to add a website",
@@ -46,8 +47,8 @@
       rate: "You sent several suggestions in a row. Try again later.",
       fail: "It could not be sent. Try again in a moment.",
       wait: "Sending…",
-      captcha: "Check “I'm not a robot” to send.",
-      captchaBad: "We could not verify the captcha. Try again.",
+      captcha: "Wait for the verification to finish to send.",
+      captchaBad: "We could not verify you are a person. Try again.",
     },
   };
 
@@ -61,12 +62,10 @@
   const send = form.querySelector("[data-suggest-send]");
   const coarse = matchMedia("(pointer: coarse)").matches;
 
-  // El desafío del captcha nunca debe ensanchar la página
-  document.documentElement.style.overflowX = "clip";
   // Que nada abra el teclado por su cuenta: solo cuando la persona toque el campo
   form.querySelectorAll("[autofocus]").forEach((n) => n.removeAttribute("autofocus"));
 
-  // ---- reCAPTCHA v2 ----
+  // ---- Cloudflare Turnstile ----
   const box = document.createElement("div");
   box.className = "suggest-captcha";
   box.hidden = true;
@@ -74,100 +73,71 @@
   let widget = null;
   let ready = false;
   let failed = false;
-  let loadedLang = "";
+  let loading = false;
 
-  // El botón Enviar queda desactivado hasta que el captcha esté resuelto
+  // El botón Enviar queda desactivado hasta que la verificación termine
   function refreshSend() {
     if (!send) return;
-    const solved = widget !== null && window.grecaptcha && window.grecaptcha.getResponse(widget);
+    const solved = widget !== null && window.turnstile && window.turnstile.getResponse(widget);
     send.disabled = !(!SITE_KEY || failed || !ready || solved);
   }
 
+  // Dibuja el widget desde cero (así queda en el idioma actual y con un token nuevo)
   function draw() {
-    if (!window.grecaptcha || !window.grecaptcha.render) return;
-    box.hidden = false;
-    if (widget === null) {
-      widget = window.grecaptcha.render(box, {
-        sitekey: SITE_KEY,
-        theme: "dark",
-        size: innerWidth < 380 ? "compact" : "normal",
-        callback: refreshSend,
-        "expired-callback": refreshSend,
-        "error-callback": refreshSend,
-      });
-    } else {
-      window.grecaptcha.reset(widget);
+    if (!window.turnstile || !window.turnstile.render) return;
+    if (widget !== null) {
+      try {
+        window.turnstile.remove(widget);
+      } catch {}
+      widget = null;
     }
+    box.replaceChildren();
+    box.hidden = false;
+    failed = false;
+    widget = window.turnstile.render(box, {
+      sitekey: SITE_KEY,
+      action: ACTION,
+      theme: "dark",
+      language: lang(),
+      size: innerWidth < 380 ? "compact" : "normal",
+      callback: refreshSend,
+      "expired-callback": refreshSend,
+      "timeout-callback": refreshSend,
+      "error-callback": () => {
+        failed = true; // Turnstile no pudo cargar: se usa el plan B de GitHub
+        refreshSend();
+      },
+    });
     ready = true;
     refreshSend();
   }
 
   function loadCaptcha() {
     if (!SITE_KEY) return;
-    const hl = lang();
-    if (window.grecaptcha && window.grecaptcha.render && loadedLang === hl) {
+    if (window.turnstile && window.turnstile.render) {
       draw();
       return;
     }
-    // (Re)carga el script en el idioma actual
-    document.querySelectorAll("script[data-rc]").forEach((s) => s.remove());
-    window.grecaptcha = undefined;
-    widget = null;
-    ready = false;
-    failed = false;
-    box.replaceChildren();
-    loadedLang = hl;
-    window.mortalCaptcha = draw;
+    if (loading) return;
+    loading = true;
+    window.mortalTurnstile = () => {
+      loading = false;
+      draw();
+    };
     const s = document.createElement("script");
-    s.dataset.rc = "";
     s.async = true;
-    s.src = `https://www.google.com/recaptcha/api.js?render=explicit&hl=${hl}&onload=mortalCaptcha`;
+    s.defer = true;
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=mortalTurnstile";
     s.onerror = () => {
-      failed = true; // sin captcha (bloqueado): se usa el plan B de GitHub
+      loading = false;
+      failed = true; // script bloqueado: plan B de GitHub
       box.hidden = true;
       refreshSend();
     };
     document.head.append(s);
   }
 
-  // ---- Desafío de imágenes: siempre centrado, fijo y ajustado a la pantalla ----
-  const FRAME = 'iframe[title*="recaptcha challenge"]';
-  let fitting = false;
-  let challengeWatch = null;
-  let watched = null;
-  function fitChallenge() {
-    if (fitting) return;
-    const frame = document.querySelector(FRAME);
-    const wrap = frame && frame.parentElement;
-    if (!wrap) return;
-    if (getComputedStyle(wrap).visibility === "hidden" || wrap.offsetWidth < 50) return; // aún no está visible
-    fitting = true;
-    const k = Math.min(1, (innerWidth - 16) / wrap.offsetWidth, (innerHeight - 16) / wrap.offsetHeight);
-    const st = wrap.style;
-    st.setProperty("position", "fixed", "important");
-    st.setProperty("top", "50%", "important");
-    st.setProperty("left", "50%", "important");
-    st.setProperty("right", "auto", "important");
-    st.setProperty("margin", "0", "important");
-    st.setProperty("transform", `translate(-50%, -50%) scale(${k.toFixed(3)})`, "important");
-    if (challengeWatch) challengeWatch.takeRecords(); // ignora los cambios que acabo de hacer
-    fitting = false;
-  }
-  new MutationObserver(() => {
-    const frame = document.querySelector(FRAME);
-    if (!frame) return;
-    const outer = [...document.body.children].find((n) => n.contains(frame));
-    if (!outer || outer === watched) return;
-    watched = outer;
-    if (challengeWatch) challengeWatch.disconnect();
-    // Google reescribe estos estilos al mostrar o mover el desafío: se vuelve a centrar cada vez
-    challengeWatch = new MutationObserver(fitChallenge);
-    challengeWatch.observe(outer, { attributes: true, subtree: true, attributeFilter: ["style", "class"] });
-    fitChallenge();
-  }).observe(document.body, { childList: true });
-  addEventListener("resize", fitChallenge);
-
-  // ---- Modal (no modal nativo, para que el desafío del captcha quede por encima) ----
+  // ---- Modal (con fondo propio; Esc y clic fuera lo cierran) ----
   let scrim = null;
   function openModal() {
     scrim = document.createElement("div");
@@ -237,7 +207,7 @@
       loadCaptcha();
     }
     if (coarse) {
-      // En el móvil no se abre el teclado solo: así se ve el formulario completo y la casilla
+      // En el móvil no se abre el teclado solo: así se ve el formulario completo
       const active = document.activeElement;
       if (active && modal.contains(active)) active.blur();
       modal.setAttribute("tabindex", "-1");
@@ -267,12 +237,12 @@
     }
     const title = titleFrom(text);
     const body = bodyFrom(text, url, siteLang);
-    const token = ready && widget !== null && window.grecaptcha ? window.grecaptcha.getResponse(widget) : "";
-    if (SITE_KEY && ready && !token) {
+    const token = ready && widget !== null && window.turnstile ? window.turnstile.getResponse(widget) : "";
+    if (SITE_KEY && ready && !failed && !token) {
       say(t("captcha"), "bad");
       return;
     }
-    // Sin Worker, o sin captcha disponible (bloqueado): plan B con GitHub
+    // Sin Worker, o sin verificación disponible (bloqueada): plan B con GitHub
     if (!ENDPOINT || (SITE_KEY && !token)) {
       openGithub(title, body);
       say(t("opened"), "ok");
@@ -284,7 +254,7 @@
       const response = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, url, siteLang, lang: lang(), company: "", captcha: token }),
+        body: JSON.stringify({ text, url, siteLang, lang: lang(), company: "", "cf-turnstile-response": token }),
       });
       if (response.status === 429) {
         say(t("rate"), "bad");
@@ -303,14 +273,15 @@
       openGithub(title, body); // plan B: GitHub con el issue ya escrito
       say(t("opened"), "ok");
     } finally {
-      if (widget !== null && window.grecaptcha) window.grecaptcha.reset(widget); // cada token sirve una vez
+      // Cada token sirve una sola vez: se pide uno nuevo para poder reintentar
+      if (widget !== null && window.turnstile) window.turnstile.reset(widget);
       refreshSend();
     }
   });
 
   new MutationObserver(() => {
     apply();
-    if (SITE_KEY && modal.open) loadCaptcha(); // vuelve a dibujar el captcha en el idioma nuevo
+    if (SITE_KEY && modal.open) loadCaptcha(); // vuelve a dibujar el widget en el idioma nuevo
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   apply();
 })();

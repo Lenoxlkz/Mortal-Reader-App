@@ -1,14 +1,15 @@
 // Mortal Reader · Worker que crea el issue de una sugerencia de sitio web.
-// El token vive solo aquí, como secreto de Cloudflare. Nunca llega al navegador.
+// Los secretos viven solo aquí, como secretos de Cloudflare. Nunca llegan al navegador.
 //
 // Secretos:  GITHUB_TOKEN      (fine-grained, solo permiso Issues en este repo)
-//            RECAPTCHA_SECRET  (clave secreta de reCAPTCHA v2)
+//            TURNSTILE_SECRET  (clave secreta del widget de Turnstile)
 // Variables: REPO              (por defecto Lenoxlkz/Mortal-Reader-App)
 //            ALLOWED_ORIGIN    (por defecto https://lenoxlkz.github.io)
 // Opcional:  KV enlazado como RATE (limita a 5 sugerencias por hora por IP)
 
 const MAX_TEXT = 2000;
 const MAX_URL = 300;
+const ACTION = "suggest"; // debe coincidir con data-action / action del widget en la página
 const LANGS = ["ES", "EN", "Multi", ""];
 
 const corsHeaders = (allowed) => ({
@@ -32,7 +33,7 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
     if (request.method !== "POST") return reply({ error: "method" }, 405, h);
     if (request.headers.get("Origin") !== allowed) return reply({ error: "origin" }, 403, h);
-    if (!env.GITHUB_TOKEN) return reply({ error: "config" }, 500, h);
+    if (!env.GITHUB_TOKEN || !env.TURNSTILE_SECRET) return reply({ error: "config" }, 500, h); // falla cerrado
 
     let d;
     try {
@@ -56,19 +57,25 @@ export default {
 
     const ip = request.headers.get("CF-Connecting-IP") || "";
 
-    // reCAPTCHA v2: se verifica en el servidor con la clave secreta
-    if (env.RECAPTCHA_SECRET) {
-      const token = String(d.captcha || "");
-      if (!token) return reply({ error: "captcha" }, 403, h);
-      const check = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    // Turnstile: se verifica en el servidor (token, acción y dominio). Acepta el estandar y el nombre antiguo.
+    const token = String(d["cf-turnstile-response"] || d.captcha || "");
+    if (!token || token.length > 2048) return reply({ error: "captcha" }, 403, h);
+    let verified = false;
+    try {
+      const params = new URLSearchParams({ secret: env.TURNSTILE_SECRET, response: token });
+      if (ip) params.set("remoteip", ip);
+      const check = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ secret: env.RECAPTCHA_SECRET, response: token, remoteip: ip }),
+        signal: AbortSignal.timeout(10000),
+        body: params,
       });
-      const result = await check.json().catch(() => ({}));
-      const host = new URL(allowed).hostname;
-      if (!result.success || (result.hostname && result.hostname !== host)) return reply({ error: "captcha" }, 403, h);
-    }
+      if (check.ok) {
+        const v = await check.json();
+        verified = v.success === true && v.action === ACTION && v.hostname === new URL(allowed).hostname;
+      }
+    } catch {}
+    if (!verified) return reply({ error: "captcha" }, 403, h);
 
     if (env.RATE) {
       const key = "ip:" + (ip || "x");
