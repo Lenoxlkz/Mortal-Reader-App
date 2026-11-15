@@ -23,6 +23,6 @@
 .btn.ghost:hover::before,.btn.wa:hover::before{transform:scaleY(1)}
 .foot a,.profile-link{padding-bottom:2px;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .5s var(--e)}
 .foot a:hover,.profile-link:hover{background-size:100% 1px}
-@keyframes tap{0%{transform:scale(.92);box-shadow:0 0 0 0 rgb(225 6 0/.6)}60%{transform:scale(1.03);box-shadow:0 0 0 14px rgb(225 6 0/0)}100%{transform:none}}
+@keyframes tap{0%{transform:scale(.92);box-shadow:0 0 0 0 rgb(255 58 20/.6)}60%{transform:scale(1.03);box-shadow:0 0 0 14px rgb(255 58 20/0)}100%{transform:none}}
 .tap{animation:tap .45s var(--e)}
 @media(prefers-reduced-motion:reduce){.w{opacity:1!important;transform:none!important;filter:none!important}.mq-track{animation:none}.btn,.chip-btn{translate:none}}
