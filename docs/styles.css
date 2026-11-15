@@ -4,7 +4,7 @@
   --fg: #f3efe6;
   --muted: #9a958c;
   --line: #2a2a2a;
-  --accent: #e10600;
+  --accent: #ff3b14;
   --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", system-ui, sans-serif;
   --serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", system-ui, sans-serif;
 }
@@ -494,9 +494,9 @@ h2.serif {
 }
 
 .sticker.red {
-  background: #e10600;
+  background: #ff3b14;
   color: #fff;
-  border-color: #e10600;
+  border-color: #ff3b14;
   width: auto;
   height: auto;
   padding: 0.45rem 0.6rem;
