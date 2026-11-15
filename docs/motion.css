@@ -1,7 +1,6 @@
 :root{--e:cubic-bezier(.16,.84,.24,1)}
 html{scroll-behavior:smooth}
 @keyframes mIn{from{opacity:0;transform:translateY(44px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
-@keyframes float{50%{transform:translateY(-12px)}}
 @keyframes sweep{0%,70%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
 @keyframes sweepHit{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
 @keyframes swap{from{opacity:.15;filter:blur(8px);transform:translateY(14px)}to{opacity:1;filter:none;transform:none}}
@@ -12,13 +11,13 @@ html{scroll-behavior:smooth}
 .bar.hide{transform:translateY(-110%)}
 .mark-bg{position:fixed;top:14vh;left:50%;max-width:none;z-index:-1;-webkit-text-stroke:1.5px rgb(255 255 255/.17);transform:translate(-50%,calc(var(--p,0)*26vh)) scale(calc(1 + var(--p,0)*.18));transition:transform .2s linear}
 .js .hero [data-m]{opacity:0;animation:mIn 1s var(--e) forwards;animation-delay:calc(var(--i)*130ms + 450ms)}
-.js .hero .phone[data-m]{animation:mIn 1s var(--e) both,float 6s ease-in-out infinite;animation-delay:calc(var(--i)*130ms + 450ms),2.6s}
+.js .hero .phone[data-m]{animation:mIn 1s var(--e) both;animation-delay:calc(var(--i)*130ms + 450ms)}
 .hero{transition:opacity .6s,filter .6s}
 .js .hero.away{opacity:.4;filter:blur(1.5px) saturate(.7)}
 .btn{transition:transform .15s,box-shadow .25s,background .25s}
 .btn:active{transform:scale(.96)}
 .btn.solid{position:relative;overflow:hidden}
-.btn.solid::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgb(255 255 255/.55) 50%,transparent 65%);transform:translateX(-130%);animation:sweep 6s ease-in-out 3s infinite}
+.btn.solid::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgb(255 255 255/.55) 50%,transparent 65%);transform:translateX(-130%)}
 .btn.solid:hover::after,.btn.solid:focus-visible::after,.btn.solid:active::after{animation:sweepHit .7s var(--e)}
 .js .reveal{opacity:0;transform:translateY(30px);filter:blur(8px);transition:opacity 1s var(--e),transform 1s var(--e),filter 1s var(--e)}
 .js .reveal.in{opacity:1;transform:none;filter:none;transition:opacity .6s,transform .6s,filter .6s}
@@ -28,13 +27,8 @@ html{scroll-behavior:smooth}
 .js .reveal.in [data-s]{opacity:1;transform:none;filter:none}
 .js .reveal [data-t]{opacity:0;transform:translateY(20px);transition:opacity .7s var(--e),transform .7s var(--e);transition-delay:calc(var(--i)*160ms + 350ms + var(--j)*110ms)}
 .js .reveal.in [data-t]{opacity:1;transform:none}
-.card,.channel{position:relative}
-.card::before,.channel::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;background:radial-gradient(16rem circle at var(--mx,50%) var(--my,0),rgb(225 6 0/.18),transparent 65%)}
-.channel::before{background:radial-gradient(16rem circle at var(--mx,50%) var(--my,0),rgb(37 211 102/.2),transparent 65%)}
-.card:hover::before,.channel:hover::before{opacity:1}
-.card>*,.channel>*{position:relative}
 #contenido.swap{animation:swap .55s var(--e)}
-.constellation .star{animation:tw 2.6s ease-in-out infinite;box-shadow:0 0 6px rgb(225 6 0/.6)}
+.constellation .star{animation:tw 2.6s ease-in-out infinite;box-shadow:0 0 6px rgb(255 58 20/.6)}
 .constellation .star:nth-child(2n){animation-delay:-.9s}
 .constellation .star:nth-child(3n){animation-delay:-1.7s;animation-duration:3.3s}
 .constellation .star:nth-child(5n){animation-delay:-.3s;animation-duration:1.9s}
