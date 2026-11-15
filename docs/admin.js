@@ -12,7 +12,8 @@
       loginSend: "Entrar",
       loginWait: "Comprobando el acceso…",
       loginOk: "Acceso correcto.",
-      loginBad: "No coincide. Usuario o contraseña incorrectos.",
+      loginBad: "No coincide. Revisa el usuario y la contraseña, incluidas las mayúsculas.",
+      loginOrigin: "Esta página no tiene permiso para entrar. Ábrela desde GitHub Pages.",
       loginFail: "No se pudo comprobar el acceso. Inténtalo de nuevo.",
       loginRate: "Demasiados intentos. Espera un poco y vuelve a entrar.",
       userEmpty: "Falta el usuario.",
@@ -46,7 +47,8 @@
       loginSend: "Sign in",
       loginWait: "Checking access…",
       loginOk: "Access granted.",
-      loginBad: "That doesn't match. Wrong username or password.",
+      loginBad: "That doesn't match. Check the username and password, including capitals.",
+      loginOrigin: "This page is not allowed to sign in. Open it from GitHub Pages.",
       loginFail: "Could not check access. Try again.",
       loginRate: "Too many attempts. Wait a moment and try again.",
       userEmpty: "Username is missing.",
@@ -222,7 +224,10 @@
       statusBox.toggleAttribute("data-on", enabled);
       statusBox.toggleAttribute("data-off", !enabled);
     }
-    if (toggleBtn) toggleBtn.setAttribute("aria-checked", enabled ? "true" : "false");
+    if (toggleBtn) {
+      toggleBtn.setAttribute("aria-checked", enabled ? "true" : "false");
+      toggleBtn.setAttribute("aria-label", enabled ? t("toggleOn") : t("toggleOff"));
+    }
     if (toggleLabel) toggleLabel.textContent = enabled ? t("toggleOn") : t("toggleOff");
   }
 
@@ -251,8 +256,10 @@
 
   if (eye && passInput) {
     eye.addEventListener("click", () => {
+      const value = passInput.value;
       const show = passInput.type === "password";
       passInput.type = show ? "text" : "password";
+      passInput.value = value;
       eye.setAttribute("aria-pressed", show ? "true" : "false");
       eye.setAttribute("aria-label", show ? t("hidePass") : t("showPass"));
       if (eyeOpen) eyeOpen.hidden = show;
@@ -261,11 +268,30 @@
     });
   }
 
+  async function ask(username, password) {
+    const r = await fetch(`${ENDPOINT}/admin/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(12000),
+      body: JSON.stringify({ username, password }),
+    });
+    let data = {};
+    try {
+      data = await r.json();
+    } catch {}
+    return { status: r.status, data };
+  }
+
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     touched = true;
-    const username = (userInput && userInput.value.trim()) || "";
-    const password = (passInput && passInput.value) || "";
+    const beforeUser = (loginForm.username.value || "").trim();
+    const beforePass = loginForm.password.value || "";
+    const active = document.activeElement;
+    if (active === userInput || active === passInput) active.blur();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const username = (loginForm.username.value || "").trim() || beforeUser;
+    const password = loginForm.password.value || beforePass;
     paintFields();
     if (!username || !password) {
       say(loginNote, !username ? t("userEmpty") : t("passEmpty"), "bad");
@@ -278,26 +304,20 @@
     hint(passHint, t("loginWait"), "wait");
     let outcome = "fail";
     try {
-      const r = await fetch(`${ENDPOINT}/admin/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(12000),
-        body: JSON.stringify({ username, password }),
-      });
-      if (r.status === 429) outcome = "rate";
-      else if (r.status === 401 || r.status === 403) outcome = "bad";
-      else if (!r.ok) outcome = "fail";
-      else {
-        const d = await r.json();
-        outcome = d.ok ? "ok" : "bad";
-      }
+      const { status, data } = await ask(username, password);
+      if (data.ok) outcome = "ok";
+      else if (status === 429 || data.error === "rate") outcome = "rate";
+      else if (data.error === "origin") outcome = "origin";
+      else if (status === 401 || data.error === "auth") outcome = "bad";
+      else if (status === 403) outcome = "origin";
+      else outcome = "fail";
     } catch {
       outcome = "fail";
     }
     setWait(false);
     if (loginSend) loginSend.textContent = t("loginSend");
     if (outcome !== "ok") {
-      const key = outcome === "rate" ? "loginRate" : outcome === "bad" ? "loginBad" : "loginFail";
+      const key = outcome === "rate" ? "loginRate" : outcome === "origin" ? "loginOrigin" : outcome === "bad" ? "loginBad" : "loginFail";
       say(loginNote, t(key), "bad");
       paintFields();
       return;
