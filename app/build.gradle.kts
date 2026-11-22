@@ -11,8 +11,8 @@ android {
         applicationId = "comall.sites.app"
         minSdk = 23
         targetSdk = 35
-        versionCode = 1
-        versionName = "3.5"
+        versionCode = 9
+        versionName = "3.8"
     }
 
     buildTypes {
