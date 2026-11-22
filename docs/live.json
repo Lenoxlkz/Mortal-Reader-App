@@ -2,9 +2,9 @@
   "schema": 1,
   "appName": "Mortal Reader",
   "versionName": "3.8",
-  "sitesEnabled": 228,
-  "updatedAt": "2026-11-08T03:34:52Z",
-  "commit": "08f0701",
+  "sitesEnabled": 236,
+  "updatedAt": "2026-11-22T06:02:51Z",
+  "commit": "db6abf6",
   "release": {
     "name": "3.8.7",
     "tag": "3.8.7",
