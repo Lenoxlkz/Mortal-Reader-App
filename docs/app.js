@@ -4,15 +4,15 @@ const FALLBACK = {
   "appName": "Mortal Reader",
   "versionName": "3.8",
   "sitesEnabled": 236,
-  "updatedAt": "2026-11-22T06:02:51Z",
-  "commit": "db6abf6",
+  "updatedAt": "2026-11-22T06:08:39Z",
+  "commit": "0bd182c",
   "release": {
-    "name": "3.8.7",
-    "tag": "3.8.7",
-    "body": "English: The collection has been expanded, a new auto-scroll function has been added for reading, and a new cache and cookie cleaning function has been added. \r\nEspañol: Se ha ampliado la colección, se ha añadido una nueva función de desplazamiento automático para la lectura y se ha incorporado una nueva función de limpieza de caché y cookies.",
-    "publishedAt": "2026-11-08T03:33:51Z",
-    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/3.8.7",
-    "downloadUrl": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/download/3.8.7/Mortal_Reader_v3.8.APK"
+    "name": "Stable",
+    "tag": "v3.8.9",
+    "body": "EN- More sites. ES- Más sitios.",
+    "publishedAt": "2026-11-22T06:08:34Z",
+    "url": "https://github.com/Lenoxlkz/Mortal-Reader-App/releases/tag/v3.8.9",
+    "downloadUrl": ""
   },
   "repo": "https://github.com/Lenoxlkz/Mortal-Reader-App"
 };
